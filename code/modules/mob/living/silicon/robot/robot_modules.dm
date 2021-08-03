@@ -135,7 +135,11 @@
 	R.update_module_innate()
 	RM.rebuild_modules()
 	R.radio.recalculateChannels()
-
+	//ALTBORGS
+	if(RM.dogborg)
+		R.dogborg = TRUE
+		RM.dogborg_equip()
+	//end
 	INVOKE_ASYNC(RM, .proc/do_transform_animation)
 	qdel(src)
 	return RM
