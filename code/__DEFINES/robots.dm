@@ -73,4 +73,5 @@
 #define ROBOT_REST_SITTING		2
 #define ROBOT_REST_BELLY_UP		3
 
-#define ROBOT_RESET_DELAY  900 SECONDS //cooldown to prevent reset abuse
+/// cooldown to prevent reset abuse
+#define ROBOT_RESET_DELAY  900 SECONDS
