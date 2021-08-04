@@ -96,7 +96,7 @@
 		return
 
 	if(wires.is_cut(WIRE_RESET_MODEL))
-		to_chat(src,"<span class='userdanger'>ERROR: Module installer reply timeout. Please check internal connections.</span>")
+		to_chat(src, SPAN_USERDANGER("ERROR: Module installer reply timeout. Please check internal connections."))
 		return
 
 	var/list/horizonmodel = list(
