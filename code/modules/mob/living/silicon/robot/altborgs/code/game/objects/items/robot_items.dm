@@ -13,7 +13,7 @@
 	var/mob/living/silicon/robot/R = user
 	var/mob/living/L = target
 
-	if(check_zone(R.zone_selected) == "head")
+	if(check_zone(R.zone_selected) == BODY_ZONE_HEAD)
 		R.visible_message("<span class='warning'>\the [R] affectionally licks \the [L]'s face!</span>", "<span class='notice'>You affectionally lick \the [L]'s face!</span>")
 		playsound(R, 'sound/effects/attackblob.ogg', 50, 1)
 	else
