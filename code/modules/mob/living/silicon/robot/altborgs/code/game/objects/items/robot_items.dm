@@ -4,7 +4,6 @@
 	icon = 'code/modules/mob/living/silicon/robot/altborgs/icons/mob/robot_items.dmi'
 	icon_state = "synthtongue"
 	hitsound = 'sound/effects/attackblob.ogg'
-	desc = "For giving affectionate kisses."
 	item_flags = NOBLUDGEON
 
 /obj/item/dogborg_tongue/afterattack(atom/target, mob/user, proximity)
