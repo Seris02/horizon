@@ -165,7 +165,7 @@
 	store_file(new /datum/computer_file/program/filemanager(src)) // File manager, allows text editor functions and basic file manipulation.
 	store_file(new /datum/computer_file/program/robotact(src))
 	store_file(new /datum/computer_file/program/ntnetdownload(src))
-	store_file(new /datum/computer_file/program/crewmanifest(src))
+	store_file(new /datum/computer_file/program/crew_manifest(src))
 	store_file(new /datum/computer_file/program/chatclient(src))
 
 
