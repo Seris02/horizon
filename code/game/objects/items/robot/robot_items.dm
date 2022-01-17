@@ -1015,7 +1015,10 @@
 				/obj/item/electronics,
 				/obj/item/stock_parts/cell,
 				/obj/item/tank/internals/plasma,
-				/obj/item/wallframe)
+				/obj/item/wallframe,
+				/obj/item/stack,
+				/obj/item/borg/upgrade,
+				/obj/item/light)
 
 /obj/item/borg/apparatus/engi/Initialize()
 	. = ..()

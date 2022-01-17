@@ -92,6 +92,8 @@ GLOBAL_LIST_INIT(pglass_recipes, list ( \
 	grind_results = list(/datum/reagent/silicon = 20, /datum/reagent/toxin/plasma = 10)
 	material_flags = MATERIAL_NO_EFFECTS
 	window_type = /obj/structure/window/plasma/fulltile
+	cost = 500
+	source = /datum/robot_energy_storage/plasma
 
 /obj/item/stack/sheet/plasmaglass/fifty
 	amount = 50
@@ -198,6 +200,29 @@ GLOBAL_LIST_INIT(prglass_recipes, list ( \
 	point_value = 23
 	matter_amount = 8
 	window_type = /obj/structure/window/plasma/reinforced/fulltile
+
+/obj/item/stack/sheet/plasmarglass/cyborg
+	mats_per_unit = null
+	cost = 250
+	source = /datum/robot_energy_storage/iron
+
+	/// What energy storage this draws glass from as a robot module.
+	var/datum/robot_energy_storage/pglasource = /datum/robot_energy_storage/plasma
+	/// The amount of energy this draws from the glass source per stack unit.
+	var/pglacost = 500
+
+/obj/item/stack/sheet/plasmarglass/cyborg/get_amount()
+	return min(round(source.energy / cost), round(pglasource.energy / pglacost))
+
+/obj/item/stack/sheet/plasmarglass/cyborg/use(used, transfer = FALSE) // Requires special checks, because it uses two storages
+	if(get_amount(used)) //ensure we still have enough energy if called in a do_after chain
+		source.use_charge(used * cost)
+		pglasource.use_charge(used * pglacost)
+		return TRUE
+
+/obj/item/stack/sheet/plasmarglass/cyborg/add(amount)
+	source.add_charge(amount * cost)
+	pglasource.add_charge(amount * pglacost)
 
 /obj/item/stack/sheet/plasmarglass/get_main_recipes()
 	. = ..()

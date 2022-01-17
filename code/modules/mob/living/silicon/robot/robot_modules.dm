@@ -46,6 +46,11 @@
 			if(ispath(rglass_module.glasource, /datum/robot_energy_storage))
 				rglass_module.glasource = get_or_create_estorage(rglass_module.glasource)
 
+		if(istype(sheet_module, /obj/item/stack/sheet/plasmarglass/cyborg))
+			var/obj/item/stack/sheet/plasmarglass/cyborg/plasmarglass_module = sheet_module
+			if(ispath(plasmarglass_module.pglasource, /datum/robot_energy_storage))
+				plasmarglass_module.pglasource = get_or_create_estorage(plasmarglass_module.pglasource)
+
 		if(istype(sheet_module.source))
 			sheet_module.cost = max(sheet_module.cost, 1) // Must not cost 0 to prevent div/0 errors.
 			sheet_module.is_cyborg = TRUE
@@ -254,10 +259,13 @@
 		/obj/item/stack/sheet/iron,
 		/obj/item/stack/sheet/glass,
 		/obj/item/stack/sheet/rglass/cyborg,
+		/obj/item/stack/sheet/plasmaglass,
+		/obj/item/stack/sheet/plasmarglass/cyborg,
 		/obj/item/stack/rods/cyborg,
 		/obj/item/stack/tile/iron/base/cyborg,
 		/obj/item/borg/apparatus/engi,
-		/obj/item/stack/cable_coil)
+		/obj/item/stack/cable_coil,
+		/obj/item/lightreplacer/cyborg)
 	radio_channels = list(RADIO_CHANNEL_ENGINEERING)
 	emag_modules = list(/obj/item/borg/stun)
 	cyborg_base_icon = "engineer"
@@ -595,6 +603,8 @@
 		/obj/item/stack/sheet/iron,
 		/obj/item/stack/sheet/glass,
 		/obj/item/stack/sheet/rglass/cyborg,
+		/obj/item/stack/sheet/plasmaglass,
+		/obj/item/stack/sheet/plasmarglass/cyborg,
 		/obj/item/stack/rods/cyborg,
 		/obj/item/stack/tile/iron/base/cyborg,
 		/obj/item/dest_tagger/borg,
@@ -671,6 +681,11 @@
 
 /datum/robot_energy_storage/glass
 	name = "Glass Synthesizer"
+
+/datum/robot_energy_storage/plasma
+	name = "Plasma Synthesizer"
+	max_energy = 15000
+	recharge_rate = 100
 
 /datum/robot_energy_storage/wire
 	max_energy = 50
