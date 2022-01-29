@@ -57,6 +57,3 @@
 	name = "Antlers"
 	icon_state = "antlers"
 	relevent_layers = list(BODY_FRONT_LAYER, BODY_ADJ_LAYER, BODY_BEHIND_LAYER)
-	dimension_y = 32
-	dimension_x = 32
-	center = TRUE
