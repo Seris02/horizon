@@ -5,7 +5,7 @@
 	silent = FALSE
 	losebreath = 0
 
-	if(!gibbed)
+	if(!gibbed && !istype(loc, /obj/vbelly))
 		INVOKE_ASYNC(src, .proc/emote, "deathgasp")
 	reagents.end_metabolization(src)
 

@@ -123,3 +123,6 @@
 
 /datum/movespeed_modifier/dragon_depression
 	multiplicative_slowdown = 5
+
+/datum/movespeed_modifier/nommed_someone
+	variable = TRUE

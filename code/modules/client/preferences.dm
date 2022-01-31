@@ -211,13 +211,15 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 	var/hear_jukebox = TRUE
 	/// Admin pref to hear storyteller logging, because bitfield is full lol.
 	var/hear_storyteller = TRUE
+	///The vore prefs
+	var/datum/vore_prefs/vr_prefs
 
 /datum/preferences/New(client/C)
 	parent = C
 
 	for(var/custom_name_id in GLOB.preferences_custom_names)
 		custom_names[custom_name_id] = get_default_name(custom_name_id)
-
+	vr_prefs = new(parent, src)
 	UI_style = GLOB.available_ui_styles[1]
 	if(istype(C))
 		if(!IsGuestKey(C.key))
@@ -239,6 +241,11 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 		save_preferences()
 	save_character() //let's save this new random character so it doesn't keep generating new ones.
 	menuoptions = list()
+	return
+
+/datum/preferences/Destroy()
+	. = ..()
+	qdel(vr_prefs)
 	return
 
 #define APPEARANCE_CATEGORY_COLUMN "<td valign='top' width='14%'>"
@@ -2876,6 +2883,8 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 		character.update_body()
 		character.update_hair()
 		character.update_body_parts()
+
+	character.character_slot = default_slot
 
 /datum/preferences/proc/get_default_name(name_id)
 	switch(name_id)

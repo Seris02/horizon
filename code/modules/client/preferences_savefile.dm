@@ -375,6 +375,8 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 	if(!S)
 		return FALSE
 	S.cd = "/"
+	if (slot)
+		vr_prefs.load_slotted_prefs(slot)
 	if(!slot)
 		slot = default_slot
 	slot = sanitize_integer(slot, 1, max_save_slots, initial(default_slot))

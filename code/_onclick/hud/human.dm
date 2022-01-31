@@ -73,6 +73,11 @@
 	using.hud = src
 	static_inventory += using
 
+	using = new /atom/movable/screen/vore_nom
+	using.icon = ui_style
+	using.hud = src
+	static_inventory += using
+
 	action_intent = new /atom/movable/screen/combattoggle/flashy()
 	action_intent.hud = src
 	action_intent.icon = ui_style

@@ -485,6 +485,10 @@
 
 
 /mob/living/blind_examine_check(atom/examined_thing)
+	//you can see other things in the belly
+	if (istype(loc, /obj/vbelly))
+		if ((examined_thing in loc) && !HAS_TRAIT_NOT_FROM(src, TRAIT_BLIND, "belly_[ref(loc)]"))
+			return TRUE
 	//need to be next to something and awake
 	if(!Adjacent(examined_thing) || incapacitated())
 		to_chat(src, SPAN_WARNING("Something is there, but you can't see it!"))

@@ -751,3 +751,17 @@
 		intent_icon.pixel_x = 16 * (i - 1) - 8 * length(streak)
 		add_overlay(intent_icon)
 	return ..()
+
+/atom/movable/screen/vore_nom
+	name = "vore person"
+	icon = 'icons/hud/screen_midnight.dmi'
+	icon_state = "nom"
+	screen_loc = ui_vore_nom
+
+/atom/movable/screen/vore_nom/Click()
+	if (!iscarbon(usr))
+		return
+	var/mob/living/carbon/human/H = usr
+	if(H.incapacitated() || !H.pulling)
+		return FALSE
+	H.Ingest(H.pulling)

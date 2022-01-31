@@ -95,3 +95,5 @@
 	var/mutant_renderkey = ""
 	///Whether the human is trying to hide their mutant bodyparts under their clothes intentially
 	var/try_hide_mutant_parts = FALSE
+	///The current character slot (set during apply_prefs_to)
+	var/character_slot
