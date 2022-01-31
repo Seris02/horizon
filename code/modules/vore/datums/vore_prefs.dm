@@ -146,6 +146,7 @@
 		needs_update |= UPDATE_ALL|UPDATE_STATIC_DATA
 		ui = new(user, src, "VorePanel")
 		ui.open()
+		user.hud_used?.nom_button?.update_visibility()
 
 /datum/vore_prefs/ui_data(mob/user)
 	var/list/data = list()
@@ -268,12 +269,14 @@
 		if("discard_changes")
 			load_slotted_prefs()
 		if("toggle_vore")
-			vore_enabled = params["toggle"]
+			var/enabled = params["toggle"]
 			var/datum/component/vore/vore = prefs?.parent?.mob?.GetComponent(/datum/component/vore)
-			vore?.vore_enabled = vore_enabled
 			if(isliving(usr))
 				var/mob/living/user = usr
 				user.update_vore_verbs()
+				user.hud_used?.nom_button?.update_visibility()
+			vore_enabled = enabled
+			vore?.vore_enabled = vore_enabled
 			has_unsaved = TRUE
 			update_static_data(usr)
 		if("toggle_act")
@@ -302,20 +305,19 @@
 				vore?.selected_belly = selected_belly
 			needs_update |= UPDATE_BELLY_VARS|UPDATE_BELLY_LIST|UPDATE_CONTENTS
 			update_static_data(usr)
-			has_unsaved = TRUE
 		if("remove_belly")
 			var/belly = params["belly"]
 			if (!isnum(belly))
 				return
 			if (bellies.len <= 1)
 				return
-			var/yes = input(usr, "Confirm", "Are you certain you want to delete the [get_var(BELLY_NAME, belly)]? If you decide afterwards that you want to un-delete it, just click the \"Discard Changes\" button. However, once you save your prefs, there will be no going back. Are you certain?", "No") as null|anything in list("Yes", "No")
-			if (yes != "Yes")
-				return
 			var/datum/component/vore/vore = prefs?.parent?.mob?.GetComponent(/datum/component/vore)
 			var/list/people_inside = vore?.get_belly_contents(belly, living=TRUE)
 			if (people_inside?.len)
 				alert(usr, "You can't remove a belly with people still inside!", "What are you doing?!", "OK")
+				return
+			var/yes = input(usr, "Confirm", "Are you certain you want to delete the [get_var(BELLY_NAME, belly)]? If you decide afterwards that you want to un-delete it, just click the \"Discard Changes\" button. However, once you save your prefs, there will be no going back. Are you certain?", "No") as null|anything in list("Yes", "No")
+			if (yes != "Yes")
 				return
 			bellies.Cut(belly, belly+1)
 			vore?.remove_belly(belly)
@@ -329,7 +331,7 @@
 			if (!isnum(belly))
 				return
 			var/atom/movable/target = locate(ref)
-			var/datum/component/vore/vore = prefs.parent?.mob?.GetComponent(/datum/component/vore)
+			var/datum/component/vore/vore = prefs?.parent?.mob?.GetComponent(/datum/component/vore)
 			if (!vore || !target || !(target in vore.get_belly_contents(belly)))
 				return
 			var/action_choice = get_input(usr, "contents_act", belly, "[target]")
@@ -508,7 +510,7 @@
 			var/static/list/mechanics		= list("Mechanics", VORE_MECHANICS_TOGGLES, list("Devourable", "Digestable", "Absorbable", "Leave Essence Cube"))
 			return mechanics
 		if(2) //chat
-			var/static/list/chat_toggles	= list("Chat Toggles", VORE_CHAT_TOGGLES, list("See Examine Messages", "See Struggle Messages", "See Other Messages"))
+			var/static/list/chat_toggles	= list("Chat", VORE_CHAT_TOGGLES, list("See Examine Messages", "See Struggle Messages", "See Other Messages"))
 			return chat_toggles
 		/*
 		if(3) //sound

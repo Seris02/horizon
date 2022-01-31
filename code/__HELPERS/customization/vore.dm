@@ -47,6 +47,10 @@
 		SEND_SOUND(hearer, sound)
 */
 
+/mob/proc/check_vore_enabled()
+	var/datum/component/vore/vore = GetComponent(/datum/component/vore)
+	return vore?.vore_enabled || client?.prefs?.vr_prefs.vore_enabled
+
 /mob/proc/check_vore_toggle(toggle, section=VORE_CHAT_TOGGLES)
 	return client?.prefs?.vr_prefs.vore_enabled && (client.prefs.vr_prefs.vore_toggles[section] & toggle)
 

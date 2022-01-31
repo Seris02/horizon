@@ -86,6 +86,7 @@
 		var/datum/component/vore/vore = LoadComponent(/datum/component/vore)
 		client.prefs.vr_prefs.load_slotted_prefs()
 		vore.update_bellies()
+		hud_used?.nom_button?.update_visibility()
 
 /mob/living/verb/OOC_Escape()
 	set name = "OOC Escape"

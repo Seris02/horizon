@@ -758,7 +758,18 @@
 	icon_state = "nom"
 	screen_loc = ui_vore_nom
 
+/atom/movable/screen/vore_nom/New(datum/hud/sent_hud)
+	. = ..()
+	hud = sent_hud
+	update_visibility()
+
+/atom/movable/screen/vore_nom/proc/update_visibility()
+	alpha = !hud?.mymob?.check_vore_enabled() ? 0 : 255
+
 /atom/movable/screen/vore_nom/Click()
+	if (!hud?.mymob?.check_vore_enabled())
+		alpha = 0
+		return
 	if (!iscarbon(usr))
 		return
 	var/mob/living/carbon/human/H = usr
