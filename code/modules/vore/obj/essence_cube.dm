@@ -85,5 +85,5 @@
 			qdel(to_revive)
 	else
 		visible_message(SPAN_WARNING("[to_revive.real_name] appears suddenly appears where the essence cube was!"))
-		to_revive.forceMove(loc.drop_location()) //where the cube was
+		to_revive.forceMove(istype(loc, /obj/vbelly) ? loc : loc.drop_location()) //where the cube was (or inside a belly)
 	qdel(src)
