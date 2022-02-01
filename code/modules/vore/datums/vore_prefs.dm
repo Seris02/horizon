@@ -127,7 +127,7 @@
 			if (bellynum > bellies.len || isnull(belly_ref))
 				vore.remove_belly(bellynum)
 			if (belly_ref != bellynum)
-				vore.bellies.Insert(bellynum, new /obj/vbelly(null, vore.owner, bellies[bellynum], bellynum))
+				vore.bellies.Insert(bellynum, new /datum/vore_belly(vore.owner, bellies[bellynum], bellynum))
 		vore.update_bellies(TRUE)
 	else
 		load_prefs(slot_from_prefs, TRUE)
@@ -201,12 +201,13 @@
 		data["in_belly"] = istype(user.loc, /obj/vbelly)
 		if (istype(user.loc, /obj/vbelly))
 			var/obj/vbelly/bellyobj = user.loc
+			var/datum/vore_belly/belly_datum = bellyobj.belly_datum
 			var/list/inside_data = list()
-			inside_data["belly_inside"] = ref(bellyobj)
-			inside_data["absorbed"] = (user in bellyobj.absorbed)
-			inside_data["desc"] = bellyobj.desc
-			inside_data["name"] = "[bellyobj.owner]'s [bellyobj.name]"
-			inside_data["contents"] = bellyobj.get_belly_contents(as_string=TRUE, ignored=user, full=TRUE)
+			inside_data["belly_inside"] = ref(belly_datum)
+			inside_data["absorbed"] = (user in belly_datum.absorbed)
+			inside_data["desc"] = belly_datum.desc
+			inside_data["name"] = "[belly_datum.owner]'s [belly_datum.name]"
+			inside_data["contents"] = belly_datum.get_belly_contents(as_string=TRUE, ignored=user, full=TRUE)
 			data["inside_data"] = inside_data
 
 	if (needs_update & UPDATE_BELLY_LIST)
@@ -340,7 +341,7 @@
 					if(ismob(usr) && (target in vore.get_belly_contents(belly)))
 						usr.examinate(target)
 				if("Eject")
-					var/obj/vbelly/bellyobj = vore.bellies[belly]
+					var/datum/vore_belly/bellyobj = vore.bellies[belly]
 					if (target in bellyobj.absorbed)
 						vore_message(usr, "You can't eject someone who's been absorbed!", warning=TRUE)
 						return
@@ -353,7 +354,8 @@
 					var/choice = input(usr, "Which belly do you want to transfer to?", "Transfer", belly) as null|anything in belly_names
 					if (isnull(choice) || choice == belly || !(target in vore.get_belly_contents(belly)))
 						return
-					target.forceMove(vore.bellies[belly_names[choice]])
+					var/datum/vore_belly/belly_datum = vore.bellies[belly_names[choice]]
+					target.forceMove(belly_datum.belly_obj)
 					//add a message here?
 				else
 					return
@@ -361,11 +363,11 @@
 			var/ref = params["ref"]
 			var/inside_of = params["belly_in"]
 			var/atom/movable/target = locate(ref)
-			var/obj/vbelly/inside = locate(inside_of)
-			if (!istype(inside) || usr.loc != inside || !target || !(target in inside))
+			var/datum/vore_belly/inside = locate(inside_of)
+			if (!istype(inside) || usr.loc != inside || !target || !(target in inside.belly_obj))
 				return
 			var/action_choice = get_input(usr, "inside_act[isliving(target) ? "_living" : ""]", 1, "[target]")
-			if (!isliving(usr) || !(target in inside) || usr.loc != inside)
+			if (!isliving(usr) || !(target in inside.belly_obj) || usr.loc != inside)
 				return
 			var/mob/living/user = usr
 			switch(action_choice)
@@ -390,7 +392,7 @@
 			var/datum/component/vore/vore = prefs.parent?.mob?.GetComponent(/datum/component/vore)
 			if (!vore)
 				return
-			var/obj/vbelly/bellyobj = vore.bellies[belly]
+			var/datum/vore_belly/bellyobj = vore.bellies[belly]
 			bellyobj.mass_release_from_contents(willing=TRUE)
 
 /datum/vore_prefs/proc/get_input(user, var_name, belly, misc_info=null)
@@ -569,7 +571,7 @@
 		if (needs_update & UPDATE_TOGGLES)
 			if (istype(prefs.parent.mob.loc, /obj/vbelly))
 				var/obj/vbelly/bellyobj = prefs.parent.mob.loc
-				bellyobj.check_mode()
+				bellyobj.belly_datum.check_mode()
 			vore?.vore_toggles = vore_toggles
 		if (needs_update & UPDATE_CHAR_VARS)
 			vore?.char_vars = char_vars

@@ -3840,6 +3840,7 @@
 #include "code\modules\vending\toys.dm"
 #include "code\modules\vending\wardrobes.dm"
 #include "code\modules\vending\youtool.dm"
+#include "code\modules\vore\datums\vore_belly.dm"
 #include "code\modules\vore\datums\vore_component.dm"
 #include "code\modules\vore\datums\vore_prefs.dm"
 #include "code\modules\vore\obj\belly.dm"

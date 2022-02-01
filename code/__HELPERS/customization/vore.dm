@@ -63,7 +63,7 @@
 
 /mob/living/proc/release_belly_contents()
 	var/datum/component/vore/vore = GetComponent(/datum/component/vore)
-	for (var/obj/vbelly/belly as anything in vore?.bellies)
+	for (var/datum/vore_belly/belly as anything in vore?.bellies)
 		belly.mass_release_from_contents()
 
 /proc/default_belly_info()

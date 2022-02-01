@@ -1,5 +1,5 @@
 /datum/component/vore
-	var/list/obj/vbelly/bellies = list()
+	var/list/datum/vore_belly/bellies = list()
 	var/mob/living/owner
 	var/char_vars
 	var/vore_toggles = list()
@@ -55,10 +55,10 @@
 	for (var/bellynum in 1 to vore.bellies.len)
 		var/belly_ref = (set_ref ? bellynum : null)
 		if (bellynum > bellies.len)
-			var/obj/vbelly/belly = new(null, owner, vore.bellies[bellynum], belly_ref)
+			var/datum/vore_belly/belly = new(owner, vore.bellies[bellynum], belly_ref)
 			bellies += belly
 		else
-			var/obj/vbelly/belly = bellies[bellynum]
+			var/datum/vore_belly/belly = bellies[bellynum]
 			belly.set_data(vore.bellies[bellynum], belly_ref)
 
 /datum/component/vore/proc/update_belly(bellynum, data)
@@ -69,7 +69,7 @@
 /datum/component/vore/proc/remove_belly(bellynum)
 	if (!bellynum || bellynum > bellies.len)
 		return
-	var/obj/vbelly/belly = bellies[bellynum]
+	var/datum/vore_belly/belly = bellies[bellynum]
 	belly.mass_release_from_contents()
 	bellies.Cut(bellynum, bellynum+1)
 	qdel(belly)
@@ -96,7 +96,7 @@
 		var/obj/vbelly/belly = loc
 		forceMove(belly.drop_location())
 
-/mob/living/proc/Ingest(mob/living/prey, mob/living/inside_of = null, obj/vbelly/belly_inside = null)
+/mob/living/proc/Ingest(mob/living/prey, mob/living/inside_of = null, datum/vore_belly/belly_inside = null)
 	//I wonder if I should put a fun little animation here... probably not
 	if (prey == src)
 		return
@@ -114,7 +114,7 @@
 	send_vore_message(src, pred_message, prey_message, audience_message, SEE_OTHER_MESSAGES, prey=prey, only=(inside_of ? belly_inside.get_belly_contents(living=TRUE) : null))
 	if (!do_after(src, VORE_EATING_TIME, prey))
 		return
-	var/obj/vbelly/belly = vore?.bellies[vore.selected_belly]
+	var/datum/vore_belly/belly = vore?.bellies[vore.selected_belly]
 	if (belly)
 		var/pred_message2 = SPAN_WARNING("You manage to [belly_swallow] [prey] into your [belly_name]!")
 		var/prey_message2 = SPAN_WARNING("[src] manages to [belly_swallow] you into [p_their()] [belly_name]!")
@@ -122,4 +122,4 @@
 		if (inside_of)
 			vore_message(inside_of, "Someone inside of you has eaten someone else!", SEE_OTHER_MESSAGES, VORE_CHAT_TOGGLES, warning=TRUE)
 		send_vore_message(src, pred_message2, prey_message2, audience_message2, SEE_OTHER_MESSAGES, prey=prey, only=(inside_of ? belly_inside.get_belly_contents(living=TRUE) : null))
-		prey.forceMove(belly)
+		prey.forceMove(belly.belly_obj)
