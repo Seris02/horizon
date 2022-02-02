@@ -29,12 +29,15 @@
 
 /datum/vore_belly/proc/proxy_destroy()
 	mass_release_from_contents()
+	if (!owner)
+		return
 	for (var/nommed_ref in belly_slowdown_refs)
 		owner.remove_movespeed_modifier(nommed_ref)
 
 /datum/vore_belly/Destroy()
 	proxy_destroy()
-	qdel(belly_obj)
+	if (belly_obj)
+		qdel(belly_obj)
 	. = ..()
 
 /datum/vore_belly/proc/set_data(_data, bellynum)

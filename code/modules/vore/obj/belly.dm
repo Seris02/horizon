@@ -16,7 +16,8 @@
 	belly_datum = belly
 
 /obj/vbelly/Destroy()
-	belly_datum.proxy_destroy()
+	if (belly_datum)
+		belly_datum.proxy_destroy()
 	. = ..()
 
 //people don't want to have to wear internals while inside someone
