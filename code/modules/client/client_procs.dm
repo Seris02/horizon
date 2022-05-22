@@ -311,6 +311,34 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 				qdel(src)
 				return
 
+	if(CONFIG_GET(flag/panic_bunker) && CONFIG_GET(flag/panic_bunker_discord_require))
+		if(!SSdbcore.Connect())
+			var/msg = "Database connection failure. Key [key] not checked for Discord account requirement."
+
+			if(!CONFIG_GET(flag/sql_enabled))
+				msg += "\nDB IS NOT ENABLED - THIS IS NOT A BUG\nDiscord account links cannot be checked without a database!"
+
+			log_world(msg)
+			message_admins(msg)
+		else
+			if(!discord_is_link_valid(ckey))
+				var/discord_otp = discord_get_or_generate_one_time_token_for_ckey(ckey)
+
+				to_chat_immediate(src, SPAN_DANGER(CONFIG_GET(string/panic_bunker_discord_register_message)))
+				to_chat_immediate(src, SPAN_BOLDNOTICE("Your One-Time-Password is: [discord_otp]"))
+				to_chat_immediate(src, SPAN_USERDANGER("DO NOT SHARE THIS OTP WITH ANYONE"))
+				var/discord_prefix = CONFIG_GET(string/discordbotcommandprefix)
+				to_chat_immediate(src, SPAN_NOTICE("To link your Discord account, head to the Discord Guild and paste the following message:<hr/><code>[discord_prefix]verify [discord_otp]</code><hr/>\n"))
+
+				if(connecting_admin)
+					log_admin("The admin [key] has been allowed to bypass the Discord account link requirement")
+					message_admins(SPAN_ADMINNOTICE("The admin [key] has been allowed to bypass the Discord account link requirement"))
+					to_chat_immediate(src, "As an admin, you have been allowed to bypass the Discord account link requirement")
+				else
+					log_access("Failed Login: [key] - No valid Discord account link registered.")
+					qdel(src)
+					return
+
 	if(SSinput.initialized)
 		set_macros()
 
@@ -446,6 +474,9 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 
 /client/Del()
 	if(!gc_destroyed)
+		// Yes this is the same as what's found in qdel(). Yes it does need to be here
+		// The reason for this is because clients get hard deleted by BYOND when disconnection happens.
+		SEND_SIGNAL(src, COMSIG_PARENT_QDELETING, TRUE)
 		Destroy() //Clean up signals and timers.
 	return ..()
 
@@ -465,26 +496,11 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 	if(credits)
 		QDEL_LIST(credits)
 	if(holder)
-		adminGreet(1)
+		adminGreet(TRUE)
 		holder.owner = null
 		GLOB.admins -= src
-		if (!GLOB.admins.len && SSticker.IsRoundInProgress()) //Only report this stuff if we are currently playing.
-			var/cheesy_message = pick(
-				"I have no admins online!",\
-				"I'm all alone :(",\
-				"I'm feeling lonely :(",\
-				"I'm so lonely :(",\
-				"Why does nobody love me? :(",\
-				"I want a man :(",\
-				"Where has everyone gone?",\
-				"I need a hug :(",\
-				"Someone come hold me :(",\
-				"I need someone on me :(",\
-				"What happened? Where has everyone gone?",\
-				"Forever alone :("\
-			)
-
-			send2adminchat("Server", "[cheesy_message] (No admins online)")
+		if(!GLOB.admins.len && SSticker.IsRoundInProgress()) //Only report this stuff if we are currently playing.
+			send2adminchat("Server", "Last admin disconnected.")
 	QDEL_LIST_ASSOC_VAL(char_render_holders)
 	if(movingmob != null)
 		movingmob.client_mobs_in_contents -= mob
@@ -1029,14 +1045,6 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 		screen -= S
 		qdel(S)
 	char_render_holders = null
-
-///Redirect proc that makes it easier to call the unlock achievement proc. Achievement type is the typepath to the award, user is the mob getting the award, and value is an optional variable used for leaderboard value increments
-/client/proc/give_award(achievement_type, mob/user, value = 1)
-	return player_details.achievements.unlock(achievement_type, user, value)
-
-///Redirect proc that makes it easier to get the status of an achievement. Achievement type is the typepath to the award.
-/client/proc/get_award_status(achievement_type, mob/user, value = 1)
-	return player_details.achievements.get_achievement_status(achievement_type)
 
 ///Gives someone hearted status for OOC, from behavior commendations
 /client/proc/adjust_heart(duration = 24 HOURS)

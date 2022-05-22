@@ -2,11 +2,6 @@
 	/// The name of the job , used for preferences, bans and more. Make sure you know what you're doing before changing this.
 	var/title = "NOPE"
 
-	/// Innate skill levels unlocked at roundstart. Based on config.jobs_have_minimal_access config setting, for example with a skeleton crew. Format is list(/datum/skill/foo = SKILL_EXP_NOVICE) with exp as an integer or as per code/_DEFINES/skills.dm
-	var/list/skills
-	/// Innate skill levels unlocked at roundstart. Based on config.jobs_have_minimal_access config setting, for example with a full crew. Format is list(/datum/skill/foo = SKILL_EXP_NOVICE) with exp as an integer or as per code/_DEFINES/skills.dm
-	var/list/minimal_skills
-
 	/// Determines who can demote this position
 	var/department_head = list()
 
@@ -59,11 +54,6 @@
 
 	var/paycheck = PAYCHECK_MINIMAL
 	var/paycheck_department = ACCOUNT_CIV
-
-	var/list/mind_traits // Traits added to the mind of the mob assigned this job
-
-	/// Lazylist of traits added to the liver of the mob assigned this job (used for the classic "cops heal from donuts" reaction, among others)
-	var/list/liver_traits = null
 
 	var/display_order = JOB_DISPLAY_ORDER_DEFAULT
 
@@ -144,31 +134,6 @@
 /datum/job/proc/after_spawn(mob/living/spawned, client/player_client)
 	SHOULD_CALL_PARENT(TRUE)
 	SEND_GLOBAL_SIGNAL(COMSIG_GLOB_JOB_AFTER_SPAWN, src, spawned, player_client)
-	for(var/trait in mind_traits)
-		ADD_TRAIT(spawned.mind, trait, JOB_TRAIT)
-
-	var/obj/item/organ/liver/liver = spawned.getorganslot(ORGAN_SLOT_LIVER)
-	if(liver)
-		for(var/trait in liver_traits)
-			ADD_TRAIT(liver, trait, JOB_TRAIT)
-
-	if(!ishuman(spawned))
-		return
-
-	var/list/roundstart_experience
-
-	if(!config) //Needed for robots.
-		roundstart_experience = minimal_skills
-
-	if(CONFIG_GET(flag/jobs_have_minimal_access))
-		roundstart_experience = minimal_skills
-	else
-		roundstart_experience = skills
-
-	if(roundstart_experience)
-		var/mob/living/carbon/human/experiencer = spawned
-		for(var/i in roundstart_experience)
-			experiencer.mind.adjust_experience(i, roundstart_experience[i], TRUE)
 
 
 /datum/job/proc/announce_job(mob/living/joining_mob)
@@ -321,9 +286,6 @@
 		PDA.ownjob = J.title
 		PDA.update_label()
 
-	if(H.client?.prefs.playtime_reward_cloak)
-		neck = /obj/item/clothing/neck/cloak/skill_reward/playing
-
 
 /datum/outfit/job/get_chameleon_disguise_info()
 	var/list/types = ..()
@@ -426,7 +388,7 @@
 
 /mob/living/silicon/robot/apply_prefs_job(client/player_client, datum/job/job)
 	if(mmi)
-		var/organic_name 
+		var/organic_name
 		if(GLOB.current_anonymous_theme)
 			organic_name = GLOB.current_anonymous_theme.anonymous_name(src)
 		else

@@ -660,28 +660,35 @@
 	anchored = anchorvalue
 	SEND_SIGNAL(src, COMSIG_MOVABLE_SET_ANCHORED, anchorvalue)
 
-/atom/movable/proc/forceMove(atom/destination)
+// destination - which atom does the src go to
+// graceful - whether the movement is "graceful" and will not break pulls or buckles
+/atom/movable/proc/forceMove(atom/destination, graceful = FALSE)
 	. = FALSE
 	if(destination)
-		. = doMove(destination)
+		. = doMove(destination, graceful)
 	else
 		CRASH("No valid destination passed into forceMove")
 
 /atom/movable/proc/moveToNullspace()
 	return doMove(null)
 
-/atom/movable/proc/doMove(atom/destination)
+/atom/movable/proc/doMove(atom/destination, graceful)
 	. = FALSE
 	move_stacks++
 	var/atom/oldloc = loc
 	if(destination)
-		if(pulledby)
+		if(!graceful && pulledby)
 			pulledby.stop_pulling()
 		var/same_loc = oldloc == destination
 		var/area/old_area = get_area(oldloc)
 		var/area/destarea = get_area(destination)
 
 		moving_diagonally = 0
+
+		// If we found a destination and have buckled mobs, move them before we move ourselves
+		if(graceful && buckled_mobs)
+			for(var/mob/buckled_mob as anything in buckled_mobs)
+				buckled_mob.forceMove(destination, TRUE)
 
 		loc = destination
 
@@ -873,7 +880,7 @@
 /atom/movable/proc/handle_buckled_mob_movement(newloc, direct, glide_size_override)
 	for(var/m in buckled_mobs)
 		var/mob/living/buckled_mob = m
-		if(!buckled_mob.Move(newloc, direct, glide_size_override))
+		if(buckled_mob.loc != loc && !buckled_mob.Move(newloc, direct, glide_size_override))
 			forceMove(buckled_mob.loc)
 			last_move = buckled_mob.last_move
 			inertia_dir = last_move
@@ -971,44 +978,6 @@
 	var/matrix/rotated_transform = transform.Turn(15 * turn_dir)
 	animate(src, pixel_x = pixel_x + pixel_x_diff, pixel_y = pixel_y + pixel_y_diff, transform=rotated_transform, time = 1, easing=BACK_EASING|EASE_IN, flags = ANIMATION_PARALLEL)
 	animate(pixel_x = pixel_x - pixel_x_diff, pixel_y = pixel_y - pixel_y_diff, transform=initial_transform, time = 2, easing=SINE_EASING, flags = ANIMATION_PARALLEL)
-
-/atom/movable/proc/do_item_attack_animation(atom/A, visual_effect_icon, obj/item/used_item)
-	var/image/I
-	if(visual_effect_icon)
-		I = image('icons/effects/effects.dmi', A, visual_effect_icon, A.layer + 0.1)
-	else if(used_item)
-		I = image(icon = used_item, loc = A, layer = A.layer + 0.1)
-		I.plane = GAME_PLANE
-
-		// Scale the icon.
-		I.transform *= 0.4
-		// The icon should not rotate.
-		I.appearance_flags = APPEARANCE_UI_IGNORE_ALPHA | RESET_COLOR
-
-		// Set the direction of the icon animation.
-		var/direction = get_dir(src, A)
-		if(direction & NORTH)
-			I.pixel_y = -12
-		else if(direction & SOUTH)
-			I.pixel_y = 12
-
-		if(direction & EAST)
-			I.pixel_x = -14
-		else if(direction & WEST)
-			I.pixel_x = 14
-
-		if(!direction) // Attacked self?!
-			I.pixel_z = 16
-
-	if(!I)
-		return
-
-	flick_overlay(I, GLOB.clients, 10)
-
-	// And animate the attack!
-	animate(I, alpha = 175, transform = matrix() * 0.75, pixel_x = 0, pixel_y = 0, pixel_z = 0, time = 3)
-	animate(time = 1)
-	animate(alpha = 0, time = 3, easing = CIRCULAR_EASING|EASE_OUT)
 
 /atom/movable/vv_get_dropdown()
 	. = ..()
@@ -1144,76 +1113,10 @@
 			if(. <= GRAB_AGGRESSIVE)
 				ADD_TRAIT(pulling, TRAIT_FLOORED, CHOKEHOLD_TRAIT)
 
-/**
- * Adds the deadchat_plays component to this atom with simple movement commands.
- *
- * Returns the component added.
- * Arguments:
- * * mode - Either ANARCHY_MODE or DEMOCRACY_MODE passed to the deadchat_control component. See [/datum/component/deadchat_control] for more info.
- * * cooldown - The cooldown between command inputs passed to the deadchat_control component. See [/datum/component/deadchat_control] for more info.
- */
-/atom/movable/proc/deadchat_plays(mode = ANARCHY_MODE, cooldown = 12 SECONDS)
-	return AddComponent(/datum/component/deadchat_control/cardinal_movement, mode, list(), cooldown)
-
 /atom/movable/vv_get_dropdown()
 	. = ..()
-	VV_DROPDOWN_OPTION(VV_HK_DEADCHAT_PLAYS, "Start/Stop Deadchat Plays")
 	VV_DROPDOWN_OPTION(VV_HK_ADD_FANTASY_AFFIX, "Add Fantasy Affix")
 
-/atom/movable/vv_do_topic(list/href_list)
-	. = ..()
-
-	if(!.)
-		return
-
-	if(href_list[VV_HK_DEADCHAT_PLAYS] && check_rights(R_FUN))
-		if(tgui_alert(usr, "Allow deadchat to control [src] via chat commands?", "Deadchat Plays [src]", list("Allow", "Cancel")) == "Cancel")
-			return
-
-		// Alert is async, so quick sanity check to make sure we should still be doing this.
-		if(QDELETED(src))
-			return
-
-		// This should never happen, but if it does it should not be silent.
-		if(deadchat_plays() == COMPONENT_INCOMPATIBLE)
-			to_chat(usr, SPAN_WARNING("Deadchat control not compatible with [src]."))
-			CRASH("deadchat_control component incompatible with object of type: [type]")
-
-		to_chat(usr, SPAN_NOTICE("Deadchat now control [src]."))
-		log_admin("[key_name(usr)] has added deadchat control to [src]")
-		message_admins(SPAN_NOTICE("[key_name(usr)] has added deadchat control to [src]"))
-
-/obj/item/proc/do_pickup_animation(atom/target)
-	set waitfor = FALSE
-	if(!istype(loc, /turf))
-		return
-	var/image/I = image(icon = src, loc = loc, layer = layer + 0.1)
-	I.plane = GAME_PLANE
-	I.transform *= 0.75
-	I.appearance_flags = APPEARANCE_UI_IGNORE_ALPHA
-	var/turf/T = get_turf(src)
-	var/direction
-	var/to_x = target.base_pixel_x
-	var/to_y = target.base_pixel_y
-
-	if(!QDELETED(T) && !QDELETED(target))
-		direction = get_dir(T, target)
-	if(direction & NORTH)
-		to_y += 32
-	else if(direction & SOUTH)
-		to_y -= 32
-	if(direction & EAST)
-		to_x += 32
-	else if(direction & WEST)
-		to_x -= 32
-	if(!direction)
-		to_y += 16
-	flick_overlay(I, GLOB.clients, 6)
-	var/matrix/M = new
-	M.Turn(pick(-30, 30))
-	animate(I, alpha = 175, pixel_x = to_x, pixel_y = to_y, time = 3, transform = M, easing = CUBIC_EASING)
-	sleep(1)
-	animate(I, alpha = 0, transform = matrix(), time = 1)
 
 /**
 * A wrapper for setDir that should only be able to fail by living mobs.

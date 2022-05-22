@@ -272,10 +272,10 @@
 	greyscale_colors = CIRCUIT_COLOR_ENGINEERING
 	build_path = /obj/machinery/rnd/production/techfab/department/engineering
 
-/obj/item/circuitboard/machine/thermomachine
-	name = "Thermomachine (Machine Board)"
+/obj/item/circuitboard/machine/heat_pump
+	name = "heat_pump (Machine Board)"
 	greyscale_colors = CIRCUIT_COLOR_ENGINEERING
-	build_path = /obj/machinery/atmospherics/components/binary/thermomachine/freezer
+	build_path = /obj/machinery/atmospherics/components/binary/heat_pump/freezer
 	var/pipe_layer = PIPING_LAYER_DEFAULT
 	req_components = list(
 		/obj/item/stock_parts/matter_bin = 2,
@@ -283,13 +283,13 @@
 		/obj/item/stack/cable_coil = 1,
 		/obj/item/stack/sheet/glass = 1)
 
-/obj/item/circuitboard/machine/thermomachine/multitool_act(mob/living/user, obj/item/multitool/I)
+/obj/item/circuitboard/machine/heat_pump/multitool_act(mob/living/user, obj/item/multitool/I)
 	. = ..()
 	if (istype(I))
 		pipe_layer = (pipe_layer >= PIPING_LAYER_MAX) ? PIPING_LAYER_MIN : (pipe_layer + 1)
 		to_chat(user, SPAN_NOTICE("You change the circuitboard to layer [pipe_layer]."))
 
-/obj/item/circuitboard/machine/thermomachine/examine()
+/obj/item/circuitboard/machine/heat_pump/examine()
 	. = ..()
 	. += SPAN_NOTICE("It is set to layer [pipe_layer].")
 
@@ -1317,15 +1317,6 @@
 		/obj/item/stack/sheet/glass = 1)
 	def_components = list(/obj/item/stack/ore/bluespace_crystal = /obj/item/stack/ore/bluespace_crystal/artificial)
 	needs_anchored = FALSE
-
-/obj/item/circuitboard/machine/skill_station
-	name = "Skill Station (Machine Board)"
-	build_path = /obj/machinery/skill_station
-	req_components = list(
-		/obj/item/stock_parts/matter_bin = 2,
-		/obj/item/stock_parts/micro_laser = 2,
-		/obj/item/stock_parts/scanning_module = 2
-	)
 
 /obj/item/circuitboard/machine/destructive_scanner
 	name = "Experimental Destructive Scanner (Machine Board)"

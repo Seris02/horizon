@@ -89,9 +89,6 @@
 #define VV_HK_EDIT_FILTERS "edit_filters"
 #define VV_HK_ADD_AI "add_ai"
 
-// /atom/movable
-#define VV_HK_DEADCHAT_PLAYS "deadchat_plays"
-
 // /obj
 #define VV_HK_OSAY "osay"
 #define VV_HK_MASS_DEL_TYPE "mass_delete_type"
@@ -114,6 +111,8 @@
 #define VV_HK_GIVE_DIRECT_CONTROL "give_direct_control"
 #define VV_HK_OFFER_GHOSTS "offer_ghosts"
 #define VV_HK_SDQL_SPELL "sdql_spell"
+#define VV_HK_MODIFY_SKILLS "modify_skills"
+
 
 // /mob/living/carbon
 #define VV_HK_MAKE_AI "aiify"

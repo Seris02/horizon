@@ -25,8 +25,6 @@
 	paycheck = PAYCHECK_COMMAND
 	paycheck_department = ACCOUNT_SCI
 
-	liver_traits = list(TRAIT_ROYAL_METABOLISM)
-
 	display_order = JOB_DISPLAY_ORDER_RESEARCH_DIRECTOR
 	bounty_types = CIV_JOB_SCI
 
@@ -66,8 +64,6 @@
 	backpack = /obj/item/storage/backpack/science
 	satchel = /obj/item/storage/backpack/satchel/tox
 	duffelbag = /obj/item/storage/backpack/duffelbag/toxins
-
-	skillchips = list(/obj/item/skillchip/job/research_director)
 
 	chameleon_extras = /obj/item/stamp/rd
 

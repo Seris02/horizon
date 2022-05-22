@@ -141,13 +141,6 @@
 	glass_desc = "The raw essence of a banana. HONK."
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 
-/datum/reagent/consumable/banana/on_mob_life(mob/living/carbon/M, delta_time, times_fired)
-	var/obj/item/organ/liver/liver = M.getorganslot(ORGAN_SLOT_LIVER)
-	if((liver && HAS_TRAIT(liver, TRAIT_COMEDY_METABOLISM)) || ismonkey(M))
-		M.heal_bodypart_damage(1 * REM * delta_time, 1 * REM * delta_time, 0)
-		. = TRUE
-	..()
-
 /datum/reagent/consumable/nothing
 	name = "Nothing"
 	description = "Absolutely nothing."
@@ -281,6 +274,14 @@
 	glass_name = "glass of coffee"
 	glass_desc = "Don't drop it, or you'll send scalding liquid and glass shards everywhere."
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
+
+/datum/reagent/consumable/coffee/on_mob_metabolize(mob/living/living)
+	..()
+	living.attributes.add_buff("coffee", /datum/attribute_buff/caffeine)
+
+/datum/reagent/consumable/coffee/on_mob_end_metabolize(mob/living/living)
+	living.attributes.remove_buff("coffee")
+	..()
 
 /datum/reagent/consumable/coffee/overdose_process(mob/living/M, delta_time, times_fired)
 	M.Jitter(5 * REM * delta_time)
@@ -555,17 +556,8 @@
 	glass_desc = "Goes well with a Vlad's salad."
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 
-/datum/reagent/consumable/pwr_game/expose_mob(mob/living/exposed_mob, methods=TOUCH, reac_volume)
-	. = ..()
-	if(exposed_mob?.mind?.get_skill_level(/datum/skill/gaming) >= SKILL_LEVEL_LEGENDARY && (methods & INGEST) && !HAS_TRAIT(exposed_mob, TRAIT_GAMERGOD))
-		ADD_TRAIT(exposed_mob, TRAIT_GAMERGOD, "pwr_game")
-		to_chat(exposed_mob, "<span class='nicegreen'>As you imbibe the Pwr Game, your gamer third eye opens... \
-		You feel as though a great secret of the universe has been made known to you...</span>")
-
 /datum/reagent/consumable/pwr_game/on_mob_life(mob/living/carbon/M, delta_time, times_fired)
 	M.adjust_bodytemperature(-8 * REM * TEMPERATURE_DAMAGE_COEFFICIENT * delta_time, M.get_body_temp_normal())
-	if(DT_PROB(5, delta_time))
-		M.mind?.adjust_experience(/datum/skill/gaming, 5)
 	..()
 
 /datum/reagent/consumable/shamblers
@@ -734,10 +726,7 @@
 	M.adjustToxLoss(-0.5 * REM * delta_time, 0)
 	M.adjustOxyLoss(-0.5 * REM * delta_time, 0)
 	if(M.nutrition && (M.nutrition - 2 > 0))
-		var/obj/item/organ/liver/liver = M.getorganslot(ORGAN_SLOT_LIVER)
-		if(!(HAS_TRAIT(liver, TRAIT_MEDICAL_METABOLISM)))
-			// Drains the nutrition of the holder. Not medical doctors though, since it's the Doctor's Delight!
-			M.adjust_nutrition(-2 * REM * delta_time)
+		M.adjust_nutrition(-2 * REM * delta_time)
 	..()
 	. = TRUE
 

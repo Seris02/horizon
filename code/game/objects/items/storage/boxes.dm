@@ -706,6 +706,7 @@
 	desc = "A small box of Almost But Not Quite Plasma Premium Matches."
 	icon = 'icons/obj/cigarettes.dmi'
 	icon_state = "matchbox"
+	base_icon_state = "matchbox"
 	inhand_icon_state = "zippo"
 	worn_icon_state = "lighter"
 	w_class = WEIGHT_CLASS_TINY
@@ -713,13 +714,13 @@
 	drop_sound = 'sound/items/handling/matchbox_drop.ogg'
 	pickup_sound =  'sound/items/handling/matchbox_pickup.ogg'
 	custom_price = PAYCHECK_ASSISTANT * 0.4
-	base_icon_state = "matchbox"
 	illustration = null
+	var/matches_amount = 10
 
 /obj/item/storage/box/matches/ComponentInitialize()
 	. = ..()
 	var/datum/component/storage/STR = GetComponent(/datum/component/storage)
-	STR.max_items = 10
+	STR.max_items = matches_amount
 	STR.set_holdable(list(/obj/item/match))
 
 /obj/item/storage/box/matches/PopulateContents()
@@ -731,15 +732,25 @@
 
 /obj/item/storage/box/matches/update_icon_state()
 	. = ..()
-	switch(length(contents))
-		if(10)
+	/// Get a 0-100 non floating number percentage of how filled up the box is and change its state based on that.
+	var/percentage = round((length(contents) / matches_amount * 100))
+	switch(percentage)
+		if(100)
 			icon_state = base_icon_state
-		if(5 to 9)
+		if(99 to 51)
 			icon_state = "[base_icon_state]_almostfull"
-		if(1 to 4)
+		if(50 to 1)
 			icon_state = "[base_icon_state]_almostempty"
 		if(0)
 			icon_state = "[base_icon_state]_e"
+
+/obj/item/storage/box/matches/matchbook
+	name = "matchbook"
+	desc = "An elegant box containing a lot of matches."
+	icon_state = "matchbook"
+	base_icon_state = "matchbook"
+	custom_price = PAYCHECK_ASSISTANT * 0.7
+	matches_amount = 20
 
 /obj/item/storage/box/lights
 	name = "box of replacement bulbs"
@@ -1283,32 +1294,6 @@
 		/obj/item/stack/wrapping_paper/small=1
 		)
 	generate_items_inside(items_inside,src)
-
-/obj/item/storage/box/skillchips
-	name = "box of skillchips"
-	desc = "Contains one copy of every skillchip"
-
-/obj/item/storage/box/skillchips/PopulateContents()
-	var/list/skillchips = subtypesof(/obj/item/skillchip)
-
-	for(var/skillchip in skillchips)
-		new skillchip(src)
-
-/obj/item/storage/box/skillchips/science
-	name = "box of science job skillchips"
-	desc = "Contains spares of every science job skillchip."
-
-/obj/item/storage/box/skillchips/science/PopulateContents()
-	new/obj/item/skillchip/job/roboticist(src)
-	new/obj/item/skillchip/job/roboticist(src)
-
-/obj/item/storage/box/skillchips/engineering
-	name = "box of engineering job skillchips"
-	desc = "Contains spares of every engineering job skillchip."
-
-/obj/item/storage/box/skillchips/engineering/PopulateContents()
-	new/obj/item/skillchip/job/engineer(src)
-	new/obj/item/skillchip/job/engineer(src)
 
 /obj/item/storage/box/swab
 	name = "box of microbiological swabs"

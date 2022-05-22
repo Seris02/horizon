@@ -47,7 +47,7 @@ Difficulty: Hard
 	melee_damage_lower = 40
 	melee_damage_upper = 40
 	speed = 5
-	move_to_delay = 5
+	move_to_delay = 10
 	retreat_distance = 5
 	minimum_distance = 5
 	rapid_melee = 8 // every 1/4 second
@@ -64,9 +64,6 @@ Difficulty: Hard
 	var/enrage_time = 70
 	var/revving_charge = FALSE
 	gps_name = "Bloody Signal"
-	achievement_type = /datum/award/achievement/boss/bubblegum_kill
-	crusher_achievement_type = /datum/award/achievement/boss/bubblegum_crusher
-	score_achievement_type = /datum/award/score/bubblegum_score
 
 	deathmessage = "sinks into a pool of blood, fleeing the battle. You've won, for now... "
 	deathsound = 'sound/magic/enter_blood.ogg'
@@ -196,21 +193,6 @@ Difficulty: Hard
 		var/list/bloodpool = get_pools(get_turf(L), 0)
 		if(bloodpool.len && (!faction_check_mob(L) || L.stat == DEAD))
 			. += L
-
-/**
- * Attack by override for bubblegum
- *
- * This is used to award the frenching achievement for hitting bubblegum with a tongue
- *
- * Arguments:
- * * obj/item/W the item hitting bubblegum
- * * mob/user The user of the item
- * * params, extra parameters
- */
-/mob/living/simple_animal/hostile/megafauna/bubblegum/attackby(obj/item/W, mob/user, params)
-	. = ..()
-	if(istype(W, /obj/item/organ/tongue))
-		user.client?.give_award(/datum/award/achievement/misc/frenching, user)
 
 /mob/living/simple_animal/hostile/megafauna/bubblegum/proc/try_bloodattack()
 	var/list/targets = get_mobs_on_blood()
@@ -344,7 +326,7 @@ Difficulty: Hard
 		return FALSE
 	enrage_till = world.time + enrage_time
 	update_approach()
-	change_move_delay(3.75)
+	change_move_delay(5)
 	add_atom_colour(COLOR_BUBBLEGUM_RED, TEMPORARY_COLOUR_PRIORITY)
 	var/datum/callback/cb = CALLBACK(src, .proc/blood_enrage_end)
 	addtimer(cb, enrage_time)
@@ -414,11 +396,6 @@ Difficulty: Hard
 
 /obj/effect/decal/cleanable/blood/gibs/bubblegum/can_bloodcrawl_in()
 	return TRUE
-
-/mob/living/simple_animal/hostile/megafauna/bubblegum/grant_achievement(medaltype,scoretype)
-	. = ..()
-	if(!(flags_1 & ADMIN_SPAWNED_1))
-		SSshuttle.shuttle_purchase_requirements_met[SHUTTLE_UNLOCK_BUBBLEGUM] = TRUE
 
 /mob/living/simple_animal/hostile/megafauna/bubblegum/do_attack_animation(atom/A, visual_effect_icon, obj/item/used_item, no_effect)
 	if(!charging)
@@ -527,9 +504,6 @@ Difficulty: Hard
 	alpha = 127.5
 	crusher_loot = null
 	loot = null
-	achievement_type = null
-	crusher_achievement_type = null
-	score_achievement_type = null
 	deathmessage = "Explodes into a pool of blood!"
 	deathsound = 'sound/effects/splat.ogg'
 	true_spawn = FALSE

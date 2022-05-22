@@ -25,8 +25,6 @@
 	paycheck = PAYCHECK_COMMAND
 	paycheck_department = ACCOUNT_ENG
 
-	liver_traits = list(TRAIT_ENGINEER_METABOLISM, TRAIT_ROYAL_METABOLISM)
-
 	display_order = JOB_DISPLAY_ORDER_CHIEF_ENGINEER
 	bounty_types = CIV_JOB_ENG
 
@@ -72,8 +70,6 @@
 	box = /obj/item/storage/box/survival/engineer
 	pda_slot = ITEM_SLOT_LPOCKET
 	chameleon_extras = /obj/item/stamp/ce
-
-	skillchips = list(/obj/item/skillchip/job/engineer)
 
 	id_trim = /datum/id_trim/job/chief_engineer
 

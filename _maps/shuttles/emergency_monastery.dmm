@@ -1166,10 +1166,6 @@
 /obj/structure/chair/wood,
 /turf/open/floor/carpet,
 /area/shuttle/escape)
-"ob" = (
-/obj/machinery/skill_station,
-/turf/open/floor/iron/dark,
-/area/shuttle/escape)
 "od" = (
 /obj/machinery/vending/wardrobe/curator_wardrobe,
 /turf/open/floor/iron/dark,
@@ -2531,7 +2527,6 @@
 "Eb" = (
 /obj/structure/water_source/puddle,
 /obj/item/reagent_containers/glass/bucket,
-/obj/effect/landmark/event_spawn,
 /turf/open/floor/grass,
 /area/shuttle/escape)
 "En" = (
@@ -6510,7 +6505,7 @@ DS
 Kg
 PB
 nr
-ob
+jx
 jx
 jx
 jx

@@ -48,7 +48,7 @@
 	if(prob(floor_variance))
 		icon_state = "[base_icon_state][rand(0,6)]"
 
-/turf/closed/mineral/strong/wasteland
+/turf/closed/mineral/wasteland
 	name = "ancient dry rock"
 	color = "#B5651D"
 	environment_type = "wasteland"
@@ -58,7 +58,7 @@
 	base_icon_state = "rock_wall"
 	smoothing_flags = SMOOTH_BITMASK | SMOOTH_BORDER
 
-/turf/closed/mineral/strong/wasteland/drop_ores()
+/turf/closed/mineral/wasteland/drop_ore_loot()
 	if(prob(10))
 		new /obj/item/stack/ore/iron(src, 1)
 		new /obj/item/stack/ore/glass(src, 1)
@@ -132,7 +132,12 @@
 /obj/structure/closet/crate/grave/filled/PopulateContents()  //GRAVEROBBING IS NOW A FEATURE
 	..()
 	new /obj/effect/decal/remains/human/grave(src)
-	switch(rand(1,8))
+
+	if(prob(12.5))
+		// Nothing's in here!
+		return
+
+	switch(rand(1, 7))
 		if(1)
 			new /obj/item/coin/gold(src)
 			new /obj/item/storage/wallet(src)
@@ -147,7 +152,6 @@
 			new /obj/item/clothing/neck/stethoscope(src)
 			new /obj/item/scalpel(src)
 			new /obj/item/hemostat(src)
-
 		if(6)
 			new /obj/item/reagent_containers/glass/beaker(src)
 			new /obj/item/clothing/glasses/science(src)

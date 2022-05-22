@@ -390,14 +390,6 @@ All effects don't start immediately, but rather get worse over time; the rate is
 	if(src.data && data && data["vintage"] != src.data["vintage"])
 		src.data["vintage"] = "mixed wine"
 
-/datum/reagent/consumable/ethanol/wine/get_taste_description(mob/living/taster)
-	if(HAS_TRAIT(taster,TRAIT_WINE_TASTER))
-		if(data && data["vintage"])
-			return list("[data["vintage"]]" = 1)
-		else
-			return list("synthetic wine"=1)
-	return ..()
-
 /datum/reagent/consumable/ethanol/lizardwine
 	name = "Lizard wine"
 	description = "An alcoholic beverage from Space China, made by infusing lizard tails in ethanol."
@@ -473,13 +465,6 @@ All effects don't start immediately, but rather get worse over time; the rate is
 	glass_desc = "You've really hit rock bottom now... your liver packed its bags and left last night."
 	addiction_types = list(/datum/addiction/alcohol = 5, /datum/addiction/maintenance_drugs = 2)
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
-
-/datum/reagent/consumable/ethanol/hooch/on_mob_life(mob/living/carbon/M, delta_time, times_fired)
-	var/obj/item/organ/liver/liver = M.getorganslot(ORGAN_SLOT_LIVER)
-	if(liver && HAS_TRAIT(liver, TRAIT_GREYTIDE_METABOLISM))
-		M.heal_bodypart_damage(1 * REM * delta_time, 1 * REM * delta_time)
-		. = TRUE
-	return ..() || .
 
 /datum/reagent/consumable/ethanol/ale
 	name = "Ale"
@@ -652,13 +637,6 @@ All effects don't start immediately, but rather get worse over time; the rate is
 	glass_desc = "A simple, yet superb mixture of Vodka and orange juice. Just the thing for the tired engineer."
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 
-/datum/reagent/consumable/ethanol/screwdrivercocktail/on_mob_life(mob/living/carbon/M, delta_time, times_fired)
-	var/obj/item/organ/liver/liver = M.getorganslot(ORGAN_SLOT_LIVER)
-	if(HAS_TRAIT(liver, TRAIT_ENGINEER_METABOLISM))
-		// Engineers lose radiation poisoning at a massive rate.
-		M.radiation = max(M.radiation - (25 * REM * delta_time), 0)
-	return ..()
-
 /datum/reagent/consumable/ethanol/booger
 	name = "Booger"
 	description = "Ewww..."
@@ -769,43 +747,29 @@ All effects don't start immediately, but rather get worse over time; the rate is
 	glass_name = "Beepsky Smash"
 	glass_desc = "Heavy, hot and strong. Just like the Iron fist of the LAW."
 	overdose_threshold = 40
-	var/datum/brain_trauma/special/beepsky/B
+	var/datum/brain_trauma/special/beepsky/beepsky_trauma
 	ph = 2
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 
 /datum/reagent/consumable/ethanol/beepsky_smash/on_mob_metabolize(mob/living/carbon/M)
 	if(HAS_TRAIT(M, TRAIT_ALCOHOL_TOLERANCE))
 		metabolization_rate = 0.8
-	// if you don't have a liver, or your liver isn't an officer's liver
-	var/obj/item/organ/liver/liver = M.getorganslot(ORGAN_SLOT_LIVER)
-	if(!liver || !HAS_TRAIT(liver, TRAIT_LAW_ENFORCEMENT_METABOLISM))
-		B = new()
-		M.gain_trauma(B, TRAUMA_RESILIENCE_ABSOLUTE)
+	beepsky_trauma = new()
+	M.gain_trauma(beepsky_trauma, TRAUMA_RESILIENCE_ABSOLUTE)
 	..()
 
 /datum/reagent/consumable/ethanol/beepsky_smash/on_mob_life(mob/living/carbon/M, delta_time, times_fired)
 	M.Jitter(2)
-	var/obj/item/organ/liver/liver = M.getorganslot(ORGAN_SLOT_LIVER)
-	// if you have a liver and that liver is an officer's liver
-	if(liver && HAS_TRAIT(liver, TRAIT_LAW_ENFORCEMENT_METABOLISM))
-		M.adjustStaminaLoss(-10 * REM * delta_time, 0)
-		if(DT_PROB(10, delta_time))
-			new /datum/hallucination/items_other(M)
-		if(DT_PROB(5, delta_time))
-			new /datum/hallucination/stray_bullet(M)
 	..()
 	. = TRUE
 
 /datum/reagent/consumable/ethanol/beepsky_smash/on_mob_end_metabolize(mob/living/carbon/M)
-	if(B)
-		QDEL_NULL(B)
+	if(beepsky_trauma)
+		QDEL_NULL(beepsky_trauma)
 	return ..()
 
 /datum/reagent/consumable/ethanol/beepsky_smash/overdose_start(mob/living/carbon/M)
-	var/obj/item/organ/liver/liver = M.getorganslot(ORGAN_SLOT_LIVER)
-	// if you don't have a liver, or your liver isn't an officer's liver
-	if(!liver || !HAS_TRAIT(liver, TRAIT_LAW_ENFORCEMENT_METABOLISM))
-		M.gain_trauma(/datum/brain_trauma/mild/phobia/security, TRAUMA_RESILIENCE_BASIC)
+	M.gain_trauma(/datum/brain_trauma/mild/phobia/security, TRAUMA_RESILIENCE_BASIC)
 
 /datum/reagent/consumable/ethanol/irish_cream
 	name = "Irish Cream"
@@ -1315,13 +1279,6 @@ All effects don't start immediately, but rather get worse over time; the rate is
 	glass_desc = "A drink from Clown Heaven."
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 
-/datum/reagent/consumable/ethanol/bananahonk/on_mob_life(mob/living/carbon/M, delta_time, times_fired)
-	var/obj/item/organ/liver/liver = M.getorganslot(ORGAN_SLOT_LIVER)
-	if((liver && HAS_TRAIT(liver, TRAIT_COMEDY_METABOLISM)) || ismonkey(M))
-		M.heal_bodypart_damage(1 * REM * delta_time, 1 * REM * delta_time)
-		. = TRUE
-	return ..() || .
-
 /datum/reagent/consumable/ethanol/silencer
 	name = "Silencer"
 	description = "A drink from Mime Heaven."
@@ -1674,14 +1631,6 @@ All effects don't start immediately, but rather get worse over time; the rate is
 	glass_desc = "An intimidating and lawful beverage dares you to violate the law and make its day. Still can't drink it on duty, though."
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 
-/datum/reagent/consumable/ethanol/quadruple_sec/on_mob_life(mob/living/carbon/M, delta_time, times_fired)
-	//Securidrink in line with the Screwdriver for engineers or Nothing for mimes
-	var/obj/item/organ/liver/liver = M.getorganslot(ORGAN_SLOT_LIVER)
-	if(liver && HAS_TRAIT(liver, TRAIT_LAW_ENFORCEMENT_METABOLISM))
-		M.heal_bodypart_damage(1 * REM * delta_time, 1 * REM * delta_time)
-		. = TRUE
-	return ..()
-
 /datum/reagent/consumable/ethanol/quintuple_sec
 	name = "Quintuple Sec"
 	description = "Law, Order, Alcohol, and Police Brutality distilled into one single elixir of JUSTICE."
@@ -1693,14 +1642,6 @@ All effects don't start immediately, but rather get worse over time; the rate is
 	glass_name = "Quintuple Sec"
 	glass_desc = "Now you are become law, destroyer of clowns."
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
-
-/datum/reagent/consumable/ethanol/quintuple_sec/on_mob_life(mob/living/carbon/M, delta_time, times_fired)
-	//Securidrink in line with the Screwdriver for engineers or Nothing for mimes but STRONG..
-	var/obj/item/organ/liver/liver = M.getorganslot(ORGAN_SLOT_LIVER)
-	if(liver && HAS_TRAIT(liver, TRAIT_LAW_ENFORCEMENT_METABOLISM))
-		M.heal_bodypart_damage(2 * REM * delta_time, 2 * REM *  delta_time, 2 * REM * delta_time)
-		. = TRUE
-	return ..()
 
 /datum/reagent/consumable/ethanol/grasshopper
 	name = "Grasshopper"

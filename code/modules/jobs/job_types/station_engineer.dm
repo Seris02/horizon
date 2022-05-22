@@ -16,8 +16,6 @@
 	paycheck = PAYCHECK_MEDIUM
 	paycheck_department = ACCOUNT_ENG
 
-	liver_traits = list(TRAIT_ENGINEER_METABOLISM)
-
 	display_order = JOB_DISPLAY_ORDER_STATION_ENGINEER
 	bounty_types = CIV_JOB_ENG
 	departments_list = list(
@@ -54,8 +52,6 @@
 	box = /obj/item/storage/box/survival/engineer
 	pda_slot = ITEM_SLOT_LPOCKET
 	backpack_contents = list(/obj/item/modular_computer/tablet/preset/advanced/engineering=1)
-
-	skillchips = list(/obj/item/skillchip/job/engineer)
 
 	id_trim = /datum/id_trim/job/station_engineer
 

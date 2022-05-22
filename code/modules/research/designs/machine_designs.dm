@@ -57,11 +57,11 @@
 	category = list ("Engineering Machinery")
 	departmental_flags = DEPARTMENTAL_FLAG_ENGINEERING | DEPARTMENTAL_FLAG_SCIENCE
 
-/datum/design/board/thermomachine
-	name = "Machine Design (Freezer/Heater Board)"
-	desc = "The circuit board for a freezer/heater."
-	id = "thermomachine"
-	build_path = /obj/item/circuitboard/machine/thermomachine
+/datum/design/board/heat_pump
+	name = "Machine Design (Heat Pump Board)"
+	desc = "The circuit board for a heat pump."
+	id = "heat_pump"
+	build_path = /obj/item/circuitboard/machine/heat_pump
 	category = list ("Engineering Machinery")
 	departmental_flags = DEPARTMENTAL_FLAG_ENGINEERING | DEPARTMENTAL_FLAG_SCIENCE
 
@@ -674,14 +674,6 @@
 	id = "bounty_pad"
 	build_path = /obj/item/circuitboard/machine/bountypad
 	category = list ("Misc. Machinery")
-
-/datum/design/board/skill_station
-	name = "Machine Design (Skill station)"
-	desc = "The circuit board for Skill station."
-	id = "skill_station"
-	build_path = /obj/item/circuitboard/machine/skill_station
-	category = list ("Misc. Machinery")
-	departmental_flags = DEPARTMENTAL_FLAG_SCIENCE | DEPARTMENTAL_FLAG_CARGO | DEPARTMENTAL_FLAG_ENGINEERING | DEPARTMENTAL_FLAG_SERVICE
 
 /datum/design/board/accounting
 	name = "Machine Design (Account Registration Device)"

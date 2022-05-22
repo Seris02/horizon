@@ -15,6 +15,11 @@
 #define LIGHT_DRAIN_TIME 25
 #define LIGHT_POWER_GAIN 35
 
+// How far we should adjust the sprites to fit on the walls.
+#define LIGHT_NORTH_PIXEL_Y_OFFSET 22
+#define LIGHT_EAST_PIXEL_X_OFFSET 12
+#define LIGHT_WEST_PIXEL_X_OFFSET -12
+
 //How many reagents the lights can hold
 #define LIGHT_REAGENT_CAPACITY 5
 
@@ -64,6 +69,22 @@
 	. = ..()
 	if(building)
 		setDir(ndir)
+
+/obj/structure/light_construct/setDir(new_dir)
+	. = ..()
+	switch(dir)
+		if(NORTH)
+			pixel_y = LIGHT_NORTH_PIXEL_Y_OFFSET
+			pixel_x = 0
+		if(EAST)
+			pixel_y = 0
+			pixel_x = LIGHT_EAST_PIXEL_X_OFFSET
+		if(WEST)
+			pixel_y = 0
+			pixel_x = LIGHT_WEST_PIXEL_X_OFFSET
+		if(SOUTH)
+			pixel_y = 0
+			pixel_x = 0
 
 /obj/structure/light_construct/Destroy()
 	QDEL_NULL(cell)
@@ -256,6 +277,22 @@
 	/// Whether we take time to turn on/update lighting, unless update() is called with an instant argument
 	var/delayed = TRUE
 
+/obj/machinery/light/setDir(new_dir)
+	. = ..()
+	switch(dir)
+		if(NORTH)
+			pixel_y = LIGHT_NORTH_PIXEL_Y_OFFSET
+			pixel_x = 0
+		if(EAST)
+			pixel_y = 0
+			pixel_x = LIGHT_EAST_PIXEL_X_OFFSET
+		if(WEST)
+			pixel_y = 0
+			pixel_x = LIGHT_WEST_PIXEL_X_OFFSET
+		if(SOUTH)
+			pixel_y = 0
+			pixel_x = 0
+
 /obj/machinery/light/broken
 	status = LIGHT_BROKEN
 	icon_state = "tube-broken"
@@ -405,14 +442,18 @@
 	if(!on || status != LIGHT_OK)
 		return
 
+	var/lightbulb_power = bulb_power
 	var/area/A = get_area(src)
 	if(emergency_mode || (A?.fire))
 		. += mutable_appearance(overlayicon, "[base_state]_emergency")
-		return
-	if(nightshift_enabled)
+		lightbulb_power *= bulb_emergency_pow_mul
+	else if(nightshift_enabled)
 		. += mutable_appearance(overlayicon, "[base_state]_nightshift")
-		return
-	. += mutable_appearance(overlayicon, base_state)
+		lightbulb_power = nightshift_light_power
+	else
+		. += mutable_appearance(overlayicon, base_state)
+
+	. += emissive_appearance(overlayicon, "[base_state]_emissive", alpha = (255 * lightbulb_power))
 
 #define LIGHT_ON_DELAY_UPPER 3 SECONDS
 #define LIGHT_ON_DELAY_LOWER 1 SECONDS
@@ -779,17 +820,8 @@
 			var/obj/item/bodypart/affecting = H.get_bodypart("[(user.active_hand_index % 2 == 0) ? "r" : "l" ]_arm")
 			if(affecting?.receive_damage( 0, 5 )) // 5 burn damage
 				H.update_damage_overlays()
-			if(HAS_TRAIT(user, TRAIT_LIGHTBULB_REMOVER))
-				to_chat(user, SPAN_NOTICE("You feel like you're burning, but you can push through."))
-				if(!do_after(user, 5 SECONDS, target = src))
-					return
-				if(affecting?.receive_damage( 0, 10 )) // 10 more burn damage
-					H.update_damage_overlays()
-				to_chat(user, SPAN_NOTICE("You manage to remove the light [fitting], shattering it in process."))
-				break_light_tube()
-			else
-				to_chat(user, SPAN_WARNING("You try to remove the light [fitting], but you burn your hand on it!"))
-				return
+			to_chat(user, SPAN_WARNING("You try to remove the light [fitting], but you burn your hand on it!"))
+			return
 	else
 		to_chat(user, SPAN_NOTICE("You remove the light [fitting]."))
 	// create a light tube/bulb item and put it in the user's hand
@@ -1043,237 +1075,295 @@
 // The directions are backwards on the lights we have now
 /obj/machinery/light/directional/north
 	dir = NORTH
+	pixel_y = LIGHT_NORTH_PIXEL_Y_OFFSET
 
 /obj/machinery/light/directional/south
 	dir = SOUTH
 
 /obj/machinery/light/directional/east
 	dir = EAST
+	pixel_x = LIGHT_EAST_PIXEL_X_OFFSET
 
 /obj/machinery/light/directional/west
 	dir = WEST
+	pixel_x = LIGHT_WEST_PIXEL_X_OFFSET
 
 // ---- Broken tube
 /obj/machinery/light/broken/directional/north
 	dir = NORTH
+	pixel_y = LIGHT_NORTH_PIXEL_Y_OFFSET
 
 /obj/machinery/light/broken/directional/south
 	dir = SOUTH
 
 /obj/machinery/light/broken/directional/east
 	dir = EAST
+	pixel_x = LIGHT_EAST_PIXEL_X_OFFSET
 
 /obj/machinery/light/broken/directional/west
 	dir = WEST
+	pixel_x = LIGHT_WEST_PIXEL_X_OFFSET
 
 // ---- Tube construct
 /obj/structure/light_construct/directional/north
 	dir = NORTH
+	pixel_y = LIGHT_NORTH_PIXEL_Y_OFFSET
 
 /obj/structure/light_construct/directional/south
 	dir = SOUTH
 
 /obj/structure/light_construct/directional/east
 	dir = EAST
+	pixel_x = LIGHT_EAST_PIXEL_X_OFFSET
 
 /obj/structure/light_construct/directional/west
 	dir = WEST
+	pixel_x = LIGHT_WEST_PIXEL_X_OFFSET
 
 // ---- Tube frames
 /obj/machinery/light/built/directional/north
 	dir = NORTH
+	pixel_y = LIGHT_NORTH_PIXEL_Y_OFFSET
 
 /obj/machinery/light/built/directional/south
 	dir = SOUTH
 
 /obj/machinery/light/built/directional/east
 	dir = EAST
+	pixel_x = LIGHT_EAST_PIXEL_X_OFFSET
 
 /obj/machinery/light/built/directional/west
 	dir = WEST
+	pixel_x = LIGHT_WEST_PIXEL_X_OFFSET
 
 // ---- No nightlight tubes
 /obj/machinery/light/no_nightlight/directional/north
 	dir = NORTH
+	pixel_y = LIGHT_NORTH_PIXEL_Y_OFFSET
 
 /obj/machinery/light/no_nightlight/directional/south
 	dir = SOUTH
 
 /obj/machinery/light/no_nightlight/directional/east
 	dir = EAST
+	pixel_x = LIGHT_EAST_PIXEL_X_OFFSET
 
 /obj/machinery/light/no_nightlight/directional/west
 	dir = WEST
+	pixel_x = LIGHT_WEST_PIXEL_X_OFFSET
 
 // ---- Warm light tubes
 /obj/machinery/light/warm/directional/north
 	dir = NORTH
+	pixel_y = LIGHT_NORTH_PIXEL_Y_OFFSET
 
 /obj/machinery/light/warm/directional/south
 	dir = SOUTH
 
 /obj/machinery/light/warm/directional/east
 	dir = EAST
+	pixel_x = LIGHT_EAST_PIXEL_X_OFFSET
 
 /obj/machinery/light/warm/directional/west
 	dir = WEST
+	pixel_x = LIGHT_WEST_PIXEL_X_OFFSET
 
 // ---- No nightlight warm light tubes
 /obj/machinery/light/warm/no_nightlight/directional/north
 	dir = NORTH
+	pixel_y = LIGHT_NORTH_PIXEL_Y_OFFSET
 
 /obj/machinery/light/warm/no_nightlight/directional/south
 	dir = SOUTH
 
 /obj/machinery/light/warm/no_nightlight/directional/east
 	dir = EAST
+	pixel_x = LIGHT_EAST_PIXEL_X_OFFSET
 
 /obj/machinery/light/warm/no_nightlight/directional/west
 	dir = WEST
+	pixel_x = LIGHT_WEST_PIXEL_X_OFFSET
 
 // ---- Cold light tubes
 /obj/machinery/light/cold/directional/north
 	dir = NORTH
+	pixel_y = LIGHT_NORTH_PIXEL_Y_OFFSET
 
 /obj/machinery/light/cold/directional/south
 	dir = SOUTH
 
 /obj/machinery/light/cold/directional/east
 	dir = EAST
+	pixel_x = LIGHT_EAST_PIXEL_X_OFFSET
 
 /obj/machinery/light/cold/directional/west
 	dir = WEST
+	pixel_x = LIGHT_WEST_PIXEL_X_OFFSET
 
 // ---- No nightlight cold light tubes
 /obj/machinery/light/cold/no_nightlight/directional/north
 	dir = NORTH
+	pixel_y = LIGHT_NORTH_PIXEL_Y_OFFSET
 
 /obj/machinery/light/cold/no_nightlight/directional/south
 	dir = SOUTH
 
 /obj/machinery/light/cold/no_nightlight/directional/east
 	dir = EAST
+	pixel_x = LIGHT_EAST_PIXEL_X_OFFSET
 
 /obj/machinery/light/cold/no_nightlight/directional/west
 	dir = WEST
+	pixel_x = LIGHT_WEST_PIXEL_X_OFFSET
 
 // ---- Red tubes
 /obj/machinery/light/red/directional/north
 	dir = NORTH
+	pixel_y = LIGHT_NORTH_PIXEL_Y_OFFSET
 
 /obj/machinery/light/red/directional/south
 	dir = SOUTH
 
 /obj/machinery/light/red/directional/east
 	dir = EAST
+	pixel_x = LIGHT_EAST_PIXEL_X_OFFSET
 
 /obj/machinery/light/red/directional/west
 	dir = WEST
+	pixel_x = LIGHT_WEST_PIXEL_X_OFFSET
 
 // ---- Blacklight tubes
 /obj/machinery/light/blacklight/directional/north
 	dir = NORTH
+	pixel_y = LIGHT_NORTH_PIXEL_Y_OFFSET
 
 /obj/machinery/light/blacklight/directional/south
 	dir = SOUTH
 
 /obj/machinery/light/blacklight/directional/east
 	dir = EAST
+	pixel_x = LIGHT_EAST_PIXEL_X_OFFSET
 
 /obj/machinery/light/blacklight/directional/west
 	dir = WEST
+	pixel_x = LIGHT_WEST_PIXEL_X_OFFSET
 
 // ---- Dim tubes
 /obj/machinery/light/dim/directional/north
 	dir = NORTH
+	pixel_y = LIGHT_NORTH_PIXEL_Y_OFFSET
 
 /obj/machinery/light/dim/directional/south
 	dir = SOUTH
 
 /obj/machinery/light/dim/directional/east
 	dir = EAST
+	pixel_x = LIGHT_EAST_PIXEL_X_OFFSET
 
 /obj/machinery/light/dim/directional/west
 	dir = WEST
+	pixel_x = LIGHT_WEST_PIXEL_X_OFFSET
 
 
 // -------- Bulb lights
 /obj/machinery/light/small/directional/north
 	dir = NORTH
+	pixel_y = LIGHT_NORTH_PIXEL_Y_OFFSET
 
 /obj/machinery/light/small/directional/south
 	dir = SOUTH
 
 /obj/machinery/light/small/directional/east
 	dir = EAST
+	pixel_x = LIGHT_EAST_PIXEL_X_OFFSET
 
 /obj/machinery/light/small/directional/west
 	dir = WEST
+	pixel_x = LIGHT_WEST_PIXEL_X_OFFSET
 
 // ---- Bulb construct
 /obj/structure/light_construct/small/directional/north
 	dir = NORTH
+	pixel_y = LIGHT_NORTH_PIXEL_Y_OFFSET
 
 /obj/structure/light_construct/small/directional/south
 	dir = SOUTH
 
 /obj/structure/light_construct/small/directional/east
 	dir = EAST
+	pixel_x = LIGHT_EAST_PIXEL_X_OFFSET
 
 /obj/structure/light_construct/small/directional/west
 	dir = WEST
+	pixel_x = LIGHT_WEST_PIXEL_X_OFFSET
 
 // ---- Bulb frames
 /obj/machinery/light/small/built/directional/north
 	dir = NORTH
+	pixel_y = LIGHT_NORTH_PIXEL_Y_OFFSET
 
 /obj/machinery/light/small/built/directional/south
 	dir = SOUTH
 
 /obj/machinery/light/small/built/directional/east
 	dir = EAST
+	pixel_x = LIGHT_EAST_PIXEL_X_OFFSET
 
 /obj/machinery/light/small/built/directional/west
 	dir = WEST
+	pixel_x = LIGHT_WEST_PIXEL_X_OFFSET
 
 // ---- Broken bulbs
 /obj/machinery/light/small/broken/directional/north
 	dir = NORTH
+	pixel_y = LIGHT_NORTH_PIXEL_Y_OFFSET
 
 /obj/machinery/light/small/broken/directional/south
 	dir = SOUTH
 
 /obj/machinery/light/small/broken/directional/east
 	dir = EAST
+	pixel_x = LIGHT_EAST_PIXEL_X_OFFSET
 
 /obj/machinery/light/small/broken/directional/west
 	dir = WEST
+	pixel_x = LIGHT_WEST_PIXEL_X_OFFSET
 
 // ---- Red bulbs
 /obj/machinery/light/small/red/directional/north
 	dir = NORTH
+	pixel_y = LIGHT_NORTH_PIXEL_Y_OFFSET
 
 /obj/machinery/light/small/red/directional/south
 	dir = SOUTH
 
 /obj/machinery/light/small/red/directional/east
 	dir = EAST
+	pixel_x = LIGHT_EAST_PIXEL_X_OFFSET
 
 /obj/machinery/light/small/red/directional/west
 	dir = WEST
+	pixel_x = LIGHT_WEST_PIXEL_X_OFFSET
 
 // ---- Blacklight bulbs
 /obj/machinery/light/small/blacklight/directional/north
 	dir = NORTH
+	pixel_y = LIGHT_NORTH_PIXEL_Y_OFFSET
 
 /obj/machinery/light/small/blacklight/directional/south
 	dir = SOUTH
 
 /obj/machinery/light/small/blacklight/directional/east
 	dir = EAST
+	pixel_x = LIGHT_EAST_PIXEL_X_OFFSET
 
 /obj/machinery/light/small/blacklight/directional/west
 	dir = WEST
+	pixel_x = LIGHT_WEST_PIXEL_X_OFFSET
 
 #undef LIGHT_DRAIN_TIME
 #undef LIGHT_POWER_GAIN
+
+#undef LIGHT_NORTH_PIXEL_Y_OFFSET
+#undef LIGHT_EAST_PIXEL_X_OFFSET
+#undef LIGHT_WEST_PIXEL_X_OFFSET

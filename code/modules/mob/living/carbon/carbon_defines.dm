@@ -100,9 +100,6 @@
 	/// All of the scars a carbon has afflicted throughout their limbs
 	var/list/all_scars
 
-	/// Simple modifier for whether this mob can handle greater or lesser skillchip complexity. See /datum/mutation/human/biotechcompat/ for example.
-	var/skillchip_complexity_modifier = 0
-
 	/// Can other carbons be shoved into this one to make it fall?
 	var/can_be_shoved_into = FALSE
 
@@ -110,3 +107,8 @@
 
 	/// Cooldown for the next smell
 	var/next_smell = 0
+
+	/// List of descriptors this human has. Yes this has to be on a carbon level to be compatible with species
+	var/list/descriptors = list(
+		/datum/descriptor/attribute/strength
+	)

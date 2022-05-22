@@ -42,7 +42,8 @@ GLOBAL_LIST_EMPTY(customizable_races)
 		OFFSET_BACK = list(0,0),
 		OFFSET_SUIT = list(0,0),
 		OFFSET_NECK = list(0,0),
-		OFFSET_INHANDS = list(0,0)
+		OFFSET_INHANDS = list(0,0),
+		OFFSET_ACCESSORY = list(0,0)
 		)
 	*/
 
@@ -273,6 +274,10 @@ GLOBAL_LIST_EMPTY(customizable_races)
 			'sound/voice/scream_f2.ogg',
 		)
 	)
+	/// List of descriptors related to this species
+	var/list/species_descriptors = list(
+		/datum/descriptor/age
+	)
 
 ///////////
 // PROCS //
@@ -420,8 +425,6 @@ GLOBAL_LIST_EMPTY(customizable_races)
 		if(!current_organ || replace_current)
 			var/obj/item/organ/replacement = new organ_path()
 			// If there's an existing mutant organ, we're technically replacing it.
-			// Let's abuse the snowflake proc that skillchips added. Basically retains
-			// feature parity with every other organ too.
 			if(current_organ)
 				current_organ.before_organ_replacement(replacement)
 			// organ.Insert will qdel any current organs in that slot, so we don't need to.
@@ -453,6 +456,9 @@ GLOBAL_LIST_EMPTY(customizable_races)
  * * pref_load - Preferences to be loaded from character setup, loads in preferred mutant things like bodyparts, digilegs, skin color, etc.
  */
 /datum/species/proc/on_species_gain(mob/living/carbon/C, datum/species/old_species, pref_load)
+	// Add the species' descriptors to the human
+	if(species_descriptors)
+		C.descriptors += species_descriptors
 	// Drop the items the new species can't wear
 	if((AGENDER in species_traits))
 		C.gender = PLURAL
@@ -546,6 +552,9 @@ GLOBAL_LIST_EMPTY(customizable_races)
  * * pref_load - Preferences to be loaded from character setup, loads in preferred mutant things like bodyparts, digilegs, skin color, etc.
  */
 /datum/species/proc/on_species_loss(mob/living/carbon/human/C, datum/species/new_species, pref_load)
+	// Remove the species' descriptors from the human
+	if(species_descriptors)
+		C.descriptors -= species_descriptors
 	if(C.dna.species.exotic_bloodtype)
 		C.dna.blood_type = random_blood_type()
 	if(DIGITIGRADE in species_traits)

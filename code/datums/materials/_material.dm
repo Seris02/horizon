@@ -36,8 +36,6 @@ Simple datum which is instanced once per type and is used for every object of sa
 	var/value_per_unit = 0
 	///Armor modifiers, multiplies an items normal armor vars by these amounts.
 	var/armor_modifiers = list(MELEE = 1, BULLET = 1, LASER = 1, ENERGY = 1, BOMB = 1, BIO = 1, RAD = 1, FIRE = 1, ACID = 1)
-	///How beautiful is this material per unit.
-	var/beauty_modifier = 0
 	///Can be used to override the sound items make, lets add some SLOSHing.
 	var/item_sound_override
 	///Can be used to override the stepsound a turf makes. MORE SLOOOSH
@@ -49,11 +47,11 @@ Simple datum which is instanced once per type and is used for every object of sa
 	///What type of shard the material will shatter to
 	var/obj/item/shard_type
 	///Icon for walls which are plated with this material
-	var/wall_icon = 'icons/turf/walls/solid_wall.dmi'
+	var/wall_greyscale_config = /datum/greyscale_config/solid_wall
 	///Icon for reinforced walls which are plated with this material
-	var/reinforced_wall_icon = 'icons/turf/walls/solid_wall_reinforced.dmi'
+	var/reinforced_wall_greyscale_config = /datum/greyscale_config/reinforced_solid_wall
 	/// Icon for painted stripes on the walls
-	var/wall_stripe_icon = 'icons/turf/walls/wall_stripe.dmi'
+	var/wall_stripe_greyscale_config = /datum/greyscale_config/wall_stripe
 	/// Color of walls constructed with this material as their plating
 	var/wall_color
 	/// Type of the wall this material makes when its used as a plating, null means can't make a wall out of it.
@@ -104,9 +102,6 @@ Simple datum which is instanced once per type and is used for every object of sa
 		source.opacity = FALSE
 	if(material_flags & MATERIAL_ADD_PREFIX)
 		source.name = "[name] [source.name]"
-
-	if(beauty_modifier)
-		source.AddElement(/datum/element/beauty, beauty_modifier * amount)
 
 	if(istype(source, /obj)) //objs
 		on_applied_obj(source, amount, material_flags)
@@ -196,9 +191,6 @@ Simple datum which is instanced once per type and is used for every object of sa
 
 	if(material_flags & MATERIAL_ADD_PREFIX)
 		source.name = initial(source.name)
-
-	if(beauty_modifier)
-		source.RemoveElement(/datum/element/beauty, beauty_modifier * amount)
 
 	if(istype(source, /obj)) //objs
 		on_removed_obj(source, amount, material_flags)

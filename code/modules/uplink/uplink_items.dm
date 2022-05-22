@@ -1187,7 +1187,7 @@ GLOBAL_LIST_INIT(uplink_items, subtypesof(/datum/uplink_item))
 /datum/uplink_item/stealthy_tools/chameleon
 	name = "Chameleon Kit"
 	desc = "A set of items that contain chameleon technology allowing you to disguise as pretty much anything on the station, and more! \
-			Due to budget cuts, the shoes don't provide protection against slipping and skillchips are sold separately."
+			Due to budget cuts, the shoes don't provide protection against slipping."
 	item = /obj/item/storage/box/syndie_kit/chameleon
 	cost = 2
 	purchasable_from = ~UPLINK_NUKE_OPS //clown ops are allowed to buy this kit, since it's basically a costume
@@ -1860,7 +1860,7 @@ GLOBAL_LIST_INIT(uplink_items, subtypesof(/datum/uplink_item))
 	name = "Kinetic Accelerator Pressure Mod"
 	desc = "A modification kit which allows Kinetic Accelerators to do greatly increased damage while indoors. \
 			Occupies 35% mod capacity."
-	item = /obj/item/borg/upgrade/modkit/indoors
+	item = /obj/item/modkit/indoors
 	cost = 5 //you need two for full damage, so total of 10 for maximum damage
 	limited_stock = 2 //you can't use more than two!
 	restricted_roles = list("Shaft Miner")

@@ -1,0 +1,60 @@
+2022-05-01:
+  Azarak:
+  - bugfix: fixes experiments that required you to scan a mineral wall.
+2022-05-03:
+  Alex 'Avunia' Takiya (atakiya):
+  - server: Minimum BYOND version for compiling and hosting has been raised to 514
+  Azarak:
+  - balance: Lavaland megafauna are now slower, and easier to run away from.
+2022-05-04:
+  Azarak:
+  - rscdel: Removes achievements
+  - rscdel: Removes the intern announcer
+2022-05-08:
+  Azarak:
+  - bugfix: Fixes a cut type of cable coil being invisible
+  - rscdel: Removes deadchat plays component
+  - bugfix: Fixes bedsheet direction, spawn and icon state issues
+  - rscadd: Triples the time things burn in the fireplace
+  - bugfix: You can now add logs to the fireplace
+  - rscdel: Removes liver and mind traits and related effects
+  - rscadd: Emoting now makes a blue typing indicator
+  - rscadd: Adds a tabletop like attributes and skills system, which is currently
+      only cosmetic
+  - rscdel: removes TG skills
+  - rscdel: removes skillchips
+  - bugfix: Fixes a rare overlay lighting bug, where it would stack the overlays improperly
+  - bugfix: Fixes inconsistent pipe layering
+  - rscdel: Monkeys no longer screech while idle
+  - bugfix: Navigation beacons now display under catwalks
+  - rscadd: Renames thermomachines to heat pumps
+  - rscdel: Removes beauty element
+  - rscadd: New fire alarm sound loop
+2022-05-09:
+  Azarak:
+  - rscadd: Descriptor systems for humans
+2022-05-12:
+  Azarak:
+  - rscadd: Wormhole new icon
+  - rscadd: New sprites for pumps and porta scrubbers
+  - rscadd: Fireaxe and Flamethrower new icons
+2022-05-13:
+  Azarak:
+  - rscadd: New icons for chemical tanks
+  - rscadd: Emissive overlay for light fixtures
+  - rscadd: Adds new icons for cigarette accessories
+  - rscadd: Adds cigarette cartons
+  - rscadd: Adds matchbooks
+2022-05-18:
+  Azarak:
+  - rscadd: The GAGS system supports bitmasking.
+  - rscadd: Walls and windows have new icons.
+  - rscadd: Adds a warning about job language requirements
+2022-05-20:
+  Azarak:
+  - bugfix: Fixes Heat Pump UI and layering
+  - bugfix: Removes the defunct skill tracker PDA tab
+  - bugfix: Fixes loadouts being broken for completely new prefs
+2022-05-21:
+  AtoriBirb:
+  - imageadd: 6 new beak sprites

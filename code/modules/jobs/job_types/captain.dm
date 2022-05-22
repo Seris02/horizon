@@ -20,8 +20,6 @@
 	paycheck = PAYCHECK_COMMAND
 	paycheck_department = ACCOUNT_SEC
 
-	liver_traits = list(TRAIT_ROYAL_METABOLISM)
-
 	display_order = JOB_DISPLAY_ORDER_CAPTAIN
 	departments_list = list(
 		/datum/job_department/command,
@@ -58,8 +56,6 @@
 	shoes = /obj/item/clothing/shoes/sneakers/brown
 	head = /obj/item/clothing/head/caphat
 	backpack_contents = list(/obj/item/melee/classic_baton/telescopic=1, /obj/item/station_charter=1)
-
-	skillchips = list(/obj/item/skillchip/disk_verifier)
 
 	backpack = /obj/item/storage/backpack/captain
 	satchel = /obj/item/storage/backpack/satchel/cap

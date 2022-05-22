@@ -1188,6 +1188,7 @@
 /mob/vv_get_dropdown()
 	. = ..()
 	VV_DROPDOWN_OPTION("", "---------")
+	VV_DROPDOWN_OPTION(VV_HK_MODIFY_SKILLS, "Modify Skills")
 	VV_DROPDOWN_OPTION(VV_HK_GIB, "Gib")
 	VV_DROPDOWN_OPTION(VV_HK_GIVE_SPELL, "Give Spell")
 	VV_DROPDOWN_OPTION(VV_HK_REMOVE_SPELL, "Remove Spell")
@@ -1256,6 +1257,10 @@
 		if(!check_rights(R_DEBUG))
 			return
 		usr.client.cmd_give_sdql_spell(src)
+	if(href_list[VV_HK_MODIFY_SKILLS])
+		if(!check_rights(NONE))
+			return
+		usr.client.modify_skills(src)
 /**
  * extra var handling for the logging var
  */
@@ -1369,5 +1374,5 @@
 		client.movingmob = null
 
 /// Used for typing indicator, relevant on /living level
-/mob/proc/set_typing_indicator(state)
+/mob/proc/set_typing_indicator(state, emote = FALSE)
 	return

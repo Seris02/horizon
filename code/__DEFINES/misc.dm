@@ -505,8 +505,8 @@ GLOBAL_LIST_INIT(pda_styles, sortList(list(MONO, VT, ORBITRON, SHARE)))
 
 // possible bitflag return values of intercept_zImpact(atom/movable/AM, levels = 1) calls
 #define FALL_INTERCEPTED (1<<0) //Stops the movable from falling further and crashing on the ground
-#define FALL_NO_MESSAGE (1<<1) //Used to suppress the "[A] falls through [old_turf]" messages where it'd make little sense at all, like going downstairs.
-#define FALL_STOP_INTERCEPTING (1<<2) //Used in situations where halting the whole "intercept" loop would be better, like supermatter dusting (and thus deleting) the atom.
+#define FALL_STOP_INTERCEPTING (1<<1) //Used in situations where halting the whole "intercept" loop would be better, like supermatter dusting (and thus deleting) the atom.
+#define FALL_GRACEFUL (1<<2) //Used in situations where the falling atom should "gracefully move" down on the turf. Stairs use this
 
 //Religion
 
@@ -541,12 +541,6 @@ GLOBAL_LIST_INIT(pda_styles, sortList(list(MONO, VT, ORBITRON, SHARE)))
 #define IGNORE_HELD_ITEM (1<<2)
 #define IGNORE_INCAPACITATED (1<<3)
 #define IGNORE_DOMINANT_HAND (1<<4)
-
-// Skillchip categories
-//Various skillchip categories. Use these when setting which categories a skillchip restricts being paired with
-//while using the SKILLCHIP_RESTRICTED_CATEGORIES flag
-#define SKILLCHIP_CATEGORY_GENERAL "general"
-#define SKILLCHIP_CATEGORY_JOB "job"
 
 /// Emoji icon set
 #define EMOJI_SET 'icons/emoji.dmi'
