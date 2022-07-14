@@ -213,6 +213,7 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 	READ_FILE(S["pda_style"], pda_style)
 	READ_FILE(S["pda_color"], pda_color)
 	READ_FILE(S["interview_accepted"], interview_accepted)
+	READ_FILE(S["background_state"], background_state)
 
 	// Custom hotkeys
 	READ_FILE(S["key_bindings"], key_bindings)
@@ -283,6 +284,7 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 	interview_accepted = sanitize_integer(interview_accepted, FALSE, TRUE, initial(interview_accepted))
 	hear_jukebox = sanitize_integer(hear_jukebox, FALSE, TRUE, initial(hear_jukebox))
 	hear_storyteller = sanitize_integer(hear_storyteller, FALSE, TRUE, initial(hear_storyteller))
+	background_state = sanitize_inlist(background_state, background_state_options, initial(background_state))
 
 	if(needs_update >= 0) //save the updated version
 		var/old_default_slot = default_slot
@@ -365,6 +367,7 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 	WRITE_FILE(S["key_bindings"], key_bindings)
 	WRITE_FILE(S["hearted_until"], (hearted_until > world.realtime ? hearted_until : null))
 	WRITE_FILE(S["favorite_outfits"], favorite_outfits)
+	WRITE_FILE(S["background_state"], background_state)
 	return TRUE
 
 /datum/preferences/proc/load_character(slot)
@@ -409,6 +412,9 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 	READ_FILE(S["eye_color"], eye_color)
 	READ_FILE(S["skin_tone"], skin_tone)
 	READ_FILE(S["hairstyle_name"], hairstyle)
+	READ_FILE(S["hair_gradient_style"], hair_gradient_style)
+	READ_FILE(S["hair_gradient_color"], hair_gradient_color)
+	READ_FILE(S["hair_gradient_is_dye"], hair_gradient_is_dye)
 	READ_FILE(S["facial_style_name"], facial_hairstyle)
 	READ_FILE(S["underwear"], underwear)
 	READ_FILE(S["underwear_color"], underwear_color)
@@ -505,6 +511,9 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 			custom_names[custom_name_id] = get_default_name(custom_name_id)
 
 	hairstyle = sanitize_inlist(hairstyle, GLOB.hairstyles_list)
+	hair_gradient_style = sanitize_inlist(hair_gradient_style, GLOB.hair_gradients_list, initial(hair_gradient_style))
+	hair_gradient_color = sanitize_hexcolor(hair_gradient_color, 6, FALSE, initial(hair_gradient_color))
+	hair_gradient_is_dye = sanitize_integer(hair_gradient_is_dye, FALSE, TRUE, initial(hair_gradient_is_dye))
 	facial_hairstyle = sanitize_inlist(facial_hairstyle, GLOB.facial_hairstyles_list)
 	underwear = sanitize_inlist(underwear, GLOB.underwear_list)
 	undershirt = sanitize_inlist(undershirt, GLOB.undershirt_list)
@@ -622,6 +631,9 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 	WRITE_FILE(S["eye_color"] , eye_color)
 	WRITE_FILE(S["skin_tone"] , skin_tone)
 	WRITE_FILE(S["hairstyle_name"] , hairstyle)
+	WRITE_FILE(S["hair_gradient_style"], hair_gradient_style)
+	WRITE_FILE(S["hair_gradient_color"], hair_gradient_color)
+	WRITE_FILE(S["hair_gradient_is_dye"], hair_gradient_is_dye)
 	WRITE_FILE(S["facial_style_name"] , facial_hairstyle)
 	WRITE_FILE(S["underwear"] , underwear)
 	WRITE_FILE(S["underwear_color"] , underwear_color)

@@ -112,8 +112,7 @@
 	mood_change = -3
 
 /datum/mood_event/brain_damage/add_effects()
-	var/damage_message = pick_list_replacements(BRAIN_DAMAGE_FILE, "brain_damage")
-	description = "<span class='warning'>Hurr durr... [damage_message]</span>\n"
+	description = "<span class='warning'>Hurr durr...</span>\n"
 
 /datum/mood_event/hulk //Entire duration of having the hulk mutation
 	description = "<span class='warning'>HULK SMASH!</span>\n"
@@ -278,13 +277,6 @@
 /datum/mood_event/surgery
 	description = "<span class='boldwarning'>THEY'RE CUTTING ME OPEN!!</span>\n"
 	mood_change = -8
-
-/datum/mood_event/nanite_sadness
-	description = "<span class='warning robot'>+++++++HAPPINESS SUPPRESSION+++++++</span>\n"
-	mood_change = -7
-
-/datum/mood_event/nanite_sadness/add_effects(message)
-	description = "<span class='warning robot'>+++++++[message]+++++++</span>\n"
 
 /datum/mood_event/bald
 	description = "<span class='warning'>I need something to cover my head...</span>\n"

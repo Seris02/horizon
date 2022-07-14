@@ -182,7 +182,7 @@
 /datum/controller/subsystem/ticker/proc/declare_completion()
 	set waitfor = FALSE
 
-	to_chat(world, SPAN("infoplain", "<BR><BR><BR><span class='big bold'>The round has ended.</span>"))
+	to_chat(world, SPAN_INFOPLAIN("<BR><BR><BR><span class='big bold'>The round has ended.</span>"))
 	log_game("The round has ended.")
 
 	for(var/I in round_end_events)
@@ -193,7 +193,7 @@
 	for(var/client/C in GLOB.clients)
 		if(!C?.credits)
 			C?.RollCredits()
-		C?.playtitlemusic(40)
+		C?.playtitlemusic()
 
 	CHECK_TICK
 

@@ -6,7 +6,7 @@
 	icon = 'icons/mob/sprite_accessory/ears.dmi'
 
 /datum/sprite_accessory/ears/is_hidden(mob/living/carbon/human/H, obj/item/bodypart/HD)
-	if(H.head && (H.head.flags_inv & HIDEHAIR) || (H.wear_mask && (H.wear_mask.flags_inv & HIDEHAIR)) || !HD || HD.status == BODYPART_ROBOTIC)
+	if(H.head && (H.head.flags_inv & HIDEHAIR) || (H.wear_mask && (H.wear_mask.flags_inv & HIDEHAIR)) || !HD)
 		return TRUE
 	return FALSE
 
@@ -234,3 +234,9 @@
 /datum/sprite_accessory/ears/mutant/miqote
 	name = "Miqo'te"
 	icon_state = "miqote"
+
+/datum/sprite_accessory/ears/mutant/protogen
+	icon = 'icons/mob/sprite_accessory/synthanthro_ears.dmi'
+	name = "Protogen"
+	icon_state = "protogen"
+	recommended_species = list("synthanthro")

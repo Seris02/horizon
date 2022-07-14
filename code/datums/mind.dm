@@ -414,7 +414,7 @@
 	if(window)
 		recipient << browse(output,"window=memory")
 	else if(all_objectives.len || memory)
-		to_chat(recipient, SPAN("infoplain", "<i>[output]</i>"))
+		to_chat(recipient, SPAN_INFOPLAIN("<i>[output]</i>"))
 
 /datum/mind/Topic(href, href_list)
 	if(!check_rights(R_ADMIN))
@@ -439,7 +439,7 @@
 		if (!new_job)
 			to_chat(usr, SPAN_WARNING("Job not found."))
 			return
-		set_assigned_role(new_role)
+		set_assigned_role(new_job)
 
 	else if (href_list["memory_edit"])
 		var/new_memo = stripped_multiline_input(usr, "Write new memory", "Memory", memory, MAX_MESSAGE_LEN)

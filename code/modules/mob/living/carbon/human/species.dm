@@ -55,6 +55,10 @@ GLOBAL_LIST_EMPTY(customizable_races)
 	var/grad_style
 	///The gradient color used to color the gradient.
 	var/grad_color
+	///Permanent hair gradient color
+	var/hair_gradient_color_permanent
+	///Permanent hair gradient style
+	var/hair_gradient_style_permanent
 
 	///Does the species use skintones or not? As of now only used by humans.
 	var/use_skintones = FALSE
@@ -249,6 +253,8 @@ GLOBAL_LIST_EMPTY(customizable_races)
 	var/list/default_mutant_bodyparts = list()
 	///The type of our body. This is used for restricting wearing clothes
 	var/bodytype = BODYTYPE_HUMANOID
+	/// Bodytype variant used for when the species is snouted, for clothing.
+	var/snout_bodytype = BODYTYPE_DIGITIGRADE
 	/// Available cultural informations
 	var/list/cultures = list(CULTURES_EXOTIC, CULTURES_HUMAN)
 	var/list/locations = list(LOCATIONS_GENERIC, LOCATIONS_HUMAN)
@@ -700,7 +706,8 @@ GLOBAL_LIST_EMPTY(customizable_races)
 
 	if(!hair_hidden || dynamic_hair_suffix)
 		var/mutable_appearance/hair_overlay = mutable_appearance(layer = -HAIR_LAYER)
-		var/mutable_appearance/gradient_overlay = mutable_appearance(layer = -HAIR_LAYER)
+		var/mutable_appearance/primary_gradient_overlay = mutable_appearance(layer = -HAIR_LAYER)
+		var/mutable_appearance/secondary_gradient_overlay = mutable_appearance(layer = -HAIR_LAYER)
 		if(!hair_hidden && !H.getorgan(/obj/item/organ/brain)) //Applies the debrained overlay if there is no brain
 			if(!(NOBLOOD in species_traits))
 				hair_overlay.icon = 'icons/mob/sprite_accessory/human_face.dmi'
@@ -741,16 +748,24 @@ GLOBAL_LIST_EMPTY(customizable_races)
 						hair_overlay.color = "#" + H.hair_color
 
 					//Gradients
-					grad_style = H.grad_style
-					grad_color = H.grad_color
-					if(grad_style)
-						var/datum/sprite_accessory/gradient = GLOB.hair_gradients_list[grad_style]
+					var/primary_gradient_slot = H.hair_gradient_style_primary
+					var/secondary_gradient_slot = H.hair_gradient_style_secondary
+					if(primary_gradient_slot)
+						var/gradient_color = H.hair_gradient_color_primary
+						var/datum/sprite_accessory/gradient = GLOB.hair_gradients_list[primary_gradient_slot]
 						var/icon/temp = icon(gradient.icon, gradient.icon_state)
 						var/icon/temp_hair = icon(hair_file, hair_state)
 						temp.Blend(temp_hair, ICON_ADD)
-						gradient_overlay.icon = temp
-						gradient_overlay.color = "#" + grad_color
-
+						primary_gradient_overlay.icon = temp
+						primary_gradient_overlay.color = "#" + gradient_color
+					if(secondary_gradient_slot)
+						var/gradient_color = H.hair_gradient_color_secondary
+						var/datum/sprite_accessory/gradient = GLOB.hair_gradients_list[secondary_gradient_slot]
+						var/icon/temp = icon(gradient.icon, gradient.icon_state)
+						var/icon/temp_hair = icon(hair_file, hair_state)
+						temp.Blend(temp_hair, ICON_ADD)
+						secondary_gradient_overlay.icon = temp
+						secondary_gradient_overlay.color = "#" + gradient_color
 				else
 					hair_overlay.color = forced_colour
 
@@ -762,7 +777,8 @@ GLOBAL_LIST_EMPTY(customizable_races)
 		if(hair_overlay.icon)
 			hair_overlay.overlays += emissive_blocker(hair_overlay.icon, hair_overlay.icon_state, alpha = hair_alpha)
 			standing += hair_overlay
-			standing += gradient_overlay
+			standing += primary_gradient_overlay
+			standing += secondary_gradient_overlay
 
 	if(standing.len)
 		H.overlays_standing[HAIR_LAYER] = standing
@@ -1193,7 +1209,7 @@ GLOBAL_LIST_EMPTY(customizable_races)
 		if(ITEM_SLOT_BELT)
 			if(!(I.item_flags & NO_STRAPS_NEEDED))
 				var/obj/item/bodypart/O = H.get_bodypart(BODY_ZONE_CHEST)
-	
+
 				if(!H.w_uniform && !nojumpsuit && (!O || O.status != BODYPART_ROBOTIC))
 					if(!disable_warning)
 						to_chat(H, SPAN_WARNING("You need a jumpsuit before you can attach this [I.name]!"))
@@ -1362,7 +1378,7 @@ GLOBAL_LIST_EMPTY(customizable_races)
 			H.satiety++
 			if(DT_PROB(round(-H.satiety/77), delta_time))
 				H.Jitter(5)
-			hunger_rate = 3 * HUNGER_FACTOR
+			hunger_rate = 1.25 * HUNGER_FACTOR
 		hunger_rate *= H.physiology.hunger_mod
 		H.adjust_nutrition(-hunger_rate * delta_time)
 
@@ -2473,7 +2489,7 @@ GLOBAL_LIST_EMPTY(customizable_races)
 	if((item_slot == ITEM_SLOT_HEAD || item_slot == ITEM_SLOT_MASK) && mutant_bodyparts["snout"])
 		var/datum/sprite_accessory/snouts/snout_accessory = GLOB.sprite_accessories["snout"][mutant_bodyparts["snout"][MUTANT_INDEX_NAME]]
 		if(snout_accessory.use_muzzled_sprites)
-			perceived_bodytype = BODYTYPE_DIGITIGRADE
+			perceived_bodytype = snout_bodytype
 	if((item_slot == ITEM_SLOT_OCLOTHING || item_slot == ITEM_SLOT_ICLOTHING) && mutant_bodyparts["taur"])
 		var/datum/sprite_accessory/taur/taur_accessory = GLOB.sprite_accessories["taur"][mutant_bodyparts["taur"][MUTANT_INDEX_NAME]]
 		///Special check of applying a style 2 taur bodytype because taurs are spagheti

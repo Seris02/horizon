@@ -1,5 +1,7 @@
 GLOBAL_DATUM_INIT(fire_overlay, /mutable_appearance, mutable_appearance('icons/effects/fire.dmi', "fire"))
 
+GLOBAL_DATUM_INIT(welding_sparks, /mutable_appearance, mutable_appearance('icons/effects/welding_effect.dmi', "welding_sparks", GASFIRE_LAYER, ABOVE_LIGHTING_PLANE))
+
 /// Anything you can pick up and hold.
 /obj/item
 	name = "item"
@@ -344,6 +346,12 @@ GLOBAL_DATUM_INIT(fire_overlay, /mutable_appearance, mutable_appearance('icons/e
 		if(resistance_flags & FIRE_PROOF)
 			. += "[src] is made of fire-retardant materials."
 
+	/// Add slapcraft hints for the item if its eligible for any recipes.
+	var/list/slapcraft_hints = slapcraft_examine_hints_for_type(type)
+	if(slapcraft_hints)
+		for(var/hint in slapcraft_hints)
+			. += SPAN_NOTICE(hint)
+
 	if(!user.research_scanner)
 		return
 
@@ -447,6 +455,11 @@ GLOBAL_DATUM_INIT(fire_overlay, /mutable_appearance, mutable_appearance('icons/e
 		to_chat(usr, SPAN_NOTICE("[before_name] now has [picked_affix_name]!"))
 		log_admin("[key_name(usr)] has added [picked_affix_name] fantasy affix to [before_name]")
 		message_admins(SPAN_NOTICE("[key_name(usr)] has added [picked_affix_name] fantasy affix to [before_name]"))
+
+/obj/item/attackby(obj/item/item, mob/living/user, params)
+	if(user.try_slapcraft(src, item))
+		return TRUE
+	return ..()
 
 /obj/item/attack_hand(mob/user, list/modifiers)
 	. = ..()
@@ -1265,10 +1278,13 @@ GLOBAL_DATUM_INIT(fire_overlay, /mutable_appearance, mutable_appearance('icons/e
 	pixel_x = from_x
 	pixel_y = from_y
 	alpha = 0
+	// Store a copy of the old transform matrix
+	var/matrix/old_transform = matrix(transform)
+	// Apply our pre-animation matrix
 	transform = animation_matrix
 
 	// This is instant on byond's end, but to our clients this looks like a quick drop
-	animate(src, alpha = old_alpha, pixel_x = old_x, pixel_y = old_y, transform = matrix(), time = 3, easing = CUBIC_EASING)
+	animate(src, alpha = old_alpha, pixel_x = old_x, pixel_y = old_y, transform = old_transform, time = 3, easing = CUBIC_EASING)
 
 /atom/movable/proc/do_item_attack_animation(atom/attacked_atom, visual_effect_icon, obj/item/used_item)
 	var/image/attack_image

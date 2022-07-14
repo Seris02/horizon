@@ -781,7 +781,7 @@ GLOBAL_LIST_EMPTY(PDAs)
 			playsound(src, pick('sound/machines/twobeep_voice1.ogg', 'sound/machines/twobeep_voice2.ogg'), 50, TRUE)
 		else
 			playsound(src, 'sound/machines/twobeep_high.ogg', 50, TRUE)
-		audible_message("<span class='infoplain'>[icon2html(src, hearers(src))] *[ttone]*</span>", null, 3)
+		audible_message(SPAN_INFOPLAIN("[icon2html(src, hearers(src))] *[ttone]*"), null, 3)
 	//Search for holder of the PDA.
 	var/mob/living/L = null
 	if(loc && isliving(loc))
@@ -805,7 +805,7 @@ GLOBAL_LIST_EMPTY(PDAs)
 		if(signal.data["emojis"] == TRUE)//so will not parse emojis as such from pdas that don't send emojis
 			inbound_message = emoji_parse(inbound_message)
 
-		to_chat(L, "<span class='infoplain'>[icon2html(src)] <b>PDA message from [hrefstart][signal.data["name"]] ([signal.data["job"]])[hrefend], </b>[inbound_message] [reply]</span>")
+		to_chat(L, SPAN_INFOPLAIN("[icon2html(src)] <b>PDA message from [hrefstart][signal.data["name"]] ([signal.data["job"]])[hrefend], </b>[inbound_message] [reply]"))
 
 	update_appearance()
 	if(istext(icon_alert))
@@ -1035,6 +1035,9 @@ GLOBAL_LIST_EMPTY(PDAs)
 		var/obj/item/photo/P = C
 		picture = P.picture
 		to_chat(user, SPAN_NOTICE("You scan \the [C]."))
+	// Check to see if we have an ID inside, and a valid input for money
+	else if(id && iscash(C))
+		id.attackby(C, user) // If we do, try and put that attacking object in
 	else
 		return ..()
 
@@ -1077,11 +1080,15 @@ GLOBAL_LIST_EMPTY(PDAs)
 			A.analyzer_act(user, src)
 
 	if (!scanmode && istype(A, /obj/item/paper) && owner)
-		var/obj/item/paper/PP = A
-		if (!PP.info)
+		var/obj/item/paper/paper = A
+		if (!paper.get_info_length())
 			to_chat(user, SPAN_WARNING("Unable to scan! Paper is blank."))
 			return
-		notehtml = PP.info
+		notehtml = paper.info
+		if(paper.add_info)
+			for(var/index in 1 to length(paper.add_info))
+				var/list/style = paper.add_info_style[index]
+				notehtml += PAPER_MARK_TEXT(paper.add_info[index], style[ADD_INFO_COLOR], style[ADD_INFO_FONT])
 		note = replacetext(notehtml, "<BR>", "\[br\]")
 		note = replacetext(note, "<li>", "\[*\]")
 		note = replacetext(note, "<ul>", "\[list\]")

@@ -38,6 +38,16 @@
 /datum/loadout_item/backpack/fragrance/nectarine
 	path = /obj/item/perfume/nectarine
 
+//ACCESSORIES
+/datum/loadout_item/backpack/accessories/waistcoat
+	path = /obj/item/clothing/accessory/waistcoat
+
+/datum/loadout_item/backpack/accessories/maidapron
+	path = /obj/item/clothing/accessory/maidapron
+
+/datum/loadout_item/backpack/accessories/armband
+	path = /obj/item/clothing/accessory/armband
+
 //MISC
 /datum/loadout_item/backpack/matches
 	path = /obj/item/storage/box/matches
@@ -51,7 +61,7 @@
 
 /datum/loadout_item/backpack/ttsdevice
 	path = /obj/item/ttsdevice
-	cost = 7
+	cost = 5
 
 /datum/loadout_item/backpack/paicard
 	description = "A device, that let you browse and download various AIs."

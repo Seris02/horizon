@@ -44,10 +44,29 @@
 		COMSIG_ATOM_ENTERED = .proc/on_entered,
 	)
 	AddElement(/datum/element/connect_loc, src, loc_connections)
+	setDir(dir)
+
+/obj/machinery/shower/setDir(newdir)
+	. = ..()
+	switch(dir)
+		if(NORTH)
+			pixel_x = 0
+			pixel_y = 0
+		if(SOUTH)
+			pixel_x = 0
+			pixel_y = 24
+		if(EAST)
+			pixel_x = 0
+			pixel_y = 0
+		if(WEST)
+			pixel_x = 0
+			pixel_y = 0
 
 /obj/machinery/shower/examine(mob/user)
 	. = ..()
 	. += SPAN_NOTICE("[reagents.total_volume]/[reagents.maximum_volume] liquids remaining.")
+	. += SPAN_NOTICE("You could adjust its temperature <b>wrenching</b> it.")
+	. += SPAN_NOTICE("You could disassemble it by <b>unwrenching</b> it with right-click.")
 
 /obj/machinery/shower/Destroy()
 	QDEL_NULL(soundloop)
@@ -73,6 +92,13 @@
 			tile.MakeSlippery(TURF_WET_WATER, min_wet_time = 5 SECONDS, wet_time_to_add = 1 SECONDS)
 
 /obj/machinery/shower/attackby(obj/item/I, mob/user, params)
+	var/list/modifiers = params2list(params)
+	if(I.tool_behaviour == TOOL_WRENCH && LAZYACCESS(modifiers, RIGHT_CLICK))
+		to_chat(user, SPAN_NOTICE("You start deconstructing [src]..."))
+		if(I.use_tool(src, user, 5 SECONDS, volume=50))
+			playsound(src.loc, 'sound/items/deconstruct.ogg', 50, TRUE)
+			deconstruct(TRUE)
+		return TRUE
 	if(I.tool_behaviour == TOOL_ANALYZER)
 		to_chat(user, SPAN_NOTICE("The water temperature seems to be [current_temperature]."))
 	else
@@ -170,7 +196,9 @@
 		return PROCESS_KILL
 
 /obj/machinery/shower/deconstruct(disassembled = TRUE)
-	new /obj/item/stack/sheet/iron(drop_location(), 3)
+	new /obj/item/stack/sheet/iron(drop_location(), 2)
+	if(disassembled)
+		new /obj/item/stock_parts/water_recycler(drop_location())
 	qdel(src)
 
 /obj/machinery/shower/proc/check_heat(mob/living/L)
@@ -186,6 +214,18 @@
 		L.adjustFireLoss(5)
 		to_chat(L, SPAN_DANGER("[src] is searing!"))
 
+/obj/machinery/shower/directional/north
+	dir = NORTH
+
+/obj/machinery/shower/directional/south
+	dir = SOUTH
+	pixel_y = 24
+
+/obj/machinery/shower/directional/east
+	dir = EAST
+
+/obj/machinery/shower/directional/west
+	dir = WEST
 
 /obj/structure/showerframe
 	name = "shower frame"

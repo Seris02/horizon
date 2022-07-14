@@ -307,6 +307,13 @@ GLOBAL_LIST_EMPTY(cryopod_computers)
 		to_chat(user, SPAN_DANGER("You can't put [target] into [src]. They might wake up soon. Try again in [remaining_minutes] minutes."))
 		return
 
+	if(LAZYLEN(target.buckled_mobs) > 0)
+		if(target == user)
+			to_chat(user, SPAN_DANGER("You can't fit into the cryopod while someone is buckled to you."))
+		else
+			to_chat(user, SPAN_DANGER("You can't fit [target] into the cryopod while someone is buckled to them."))
+		return
+
 	if(target == user)
 		if(target.mind.assigned_role.req_admin_notify)
 			tgui_alert(target, "You're an important role! [AHELP_FIRST_MESSAGE]")
@@ -315,9 +322,9 @@ GLOBAL_LIST_EMPTY(cryopod_computers)
 			tgui_alert(target, "You're \a [antag.name]! [AHELP_FIRST_MESSAGE]")
 
 	if(target == user)
-		visible_message("<span class='infoplain'>[user] starts climbing into the cryo pod.</span>")
+		visible_message(SPAN_INFOPLAIN("[user] starts climbing into the cryo pod."))
 	else
-		visible_message("<span class='infoplain'>[user] starts putting [target] into the cryo pod.</span>")
+		visible_message(SPAN_INFOPLAIN("[user] starts putting [target] into the cryo pod."))
 
 	/// 3 second delay to stop people from tactically using cryopods.
 	if(!do_mob(user, target, 3 SECONDS))
@@ -328,9 +335,9 @@ GLOBAL_LIST_EMPTY(cryopod_computers)
 		return
 
 	if(target == user)
-		visible_message("<span class='infoplain'>[user] climbs into the cryo pod.</span>")
+		visible_message(SPAN_INFOPLAIN("[user] climbs into the cryo pod."))
 	else
-		visible_message("<span class='infoplain'>[user] puts [target] into the cryo pod.</span>")
+		visible_message(SPAN_INFOPLAIN("[user] puts [target] into the cryo pod."))
 
 	to_chat(target, SPAN_WARNING("<b>If you ghost, log out or close your client now, your character will shortly be permanently removed from the round.\nIf you changed your mind, you can resist out of the cryopod to eject yourself.</b>"))
 

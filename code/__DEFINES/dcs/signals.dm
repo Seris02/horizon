@@ -760,13 +760,33 @@
 /// from /obj/machinery/atmospherics/components/unary/cryo_cell/set_on(bool): (on)
 #define COMSIG_CRYO_SET_ON "cryo_set_on"
 
+// /obj/machinery/atmospherics/components/binary/valve signals
+
+/// from /obj/machinery/atmospherics/components/binary/valve/toggle(): (on)
+#define COMSIG_VALVE_SET_OPEN "valve_toggled"
+
+/// from /obj/machinery/atmospherics/set_on(active): (on)
+#define COMSIG_ATMOS_MACHINE_SET_ON "atmos_machine_set_on"
+
+/// from /obj/machinery/light_switch/set_lights(), sent to every switch in the area: (status)
+#define COMSIG_LIGHT_SWITCH_SET "light_switch_set"
+
+// /obj access signals
+
+#define COMSIG_OBJ_ALLOWED "door_try_to_activate"
+	#define COMPONENT_OBJ_ALLOW (1<<0)
+
+#define COMSIG_AIRLOCK_SHELL_ALLOWED "airlock_shell_try_allowed"
+	#define COMPONENT_AIRLOCK_SHELL_ALLOW (1<<0)
+
 // /obj/machinery/door/airlock signals
 
 //from /obj/machinery/door/airlock/open(): (forced)
 #define COMSIG_AIRLOCK_OPEN "airlock_open"
 //from /obj/machinery/door/airlock/close(): (forced)
 #define COMSIG_AIRLOCK_CLOSE "airlock_close"
-
+///from /obj/machinery/door/airlock/set_bolt():
+#define COMSIG_AIRLOCK_SET_BOLT "airlock_set_bolt"
 // /obj/item signals
 
 ///from base of obj/item/equipped(): (/mob/equipper, slot)
@@ -1036,6 +1056,29 @@
 ///called when a plant grows in a tray (obj/machinery/hydroponics)
 #define COMSIG_PLANT_ON_GROW "plant_on_grow"
 
+//Hydro tray
+///from base of /obj/machinery/hydroponics/set_seed() : (obj/item/new_seed)
+#define COMSIG_HYDROTRAY_SET_SEED "hydrotray_set_seed"
+///from base of /obj/machinery/hydroponics/set_self_sustaining() : (new_value)
+#define COMSIG_HYDROTRAY_SET_SELFSUSTAINING "hydrotray_set_selfsustaining"
+///from base of /obj/machinery/hydroponics/set_weedlevel() : (new_value)
+#define COMSIG_HYDROTRAY_SET_WEEDLEVEL "hydrotray_set_weedlevel"
+///from base of /obj/machinery/hydroponics/set_pestlevel() : (new_value)
+#define COMSIG_HYDROTRAY_SET_PESTLEVEL "hydrotray_set_pestlevel"
+///from base of /obj/machinery/hydroponics/set_waterlevel() : (new_value)
+#define COMSIG_HYDROTRAY_SET_WATERLEVEL "hydrotray_set_waterlevel"
+///from base of /obj/machinery/hydroponics/set_plant_health() : (new_value)
+#define COMSIG_HYDROTRAY_SET_PLANT_HEALTH "hydrotray_set_plant_health"
+///from base of /obj/machinery/hydroponics/set_toxic() : (new_value)
+#define COMSIG_HYDROTRAY_SET_TOXIC "hydrotray_set_toxic"
+///from base of /obj/machinery/hydroponics/set_plant_status() : (new_value)
+#define COMSIG_HYDROTRAY_SET_PLANT_STATUS "hydrotray_set_plant_status"
+///from base of /obj/machinery/hydroponics/update_tray() : (mob/user, product_count)
+#define COMSIG_HYDROTRAY_ON_HARVEST "hydrotray_on_harvest"
+///from base of /obj/machinery/hydroponics/plantdies()
+#define COMSIG_HYDROTRAY_PLANT_DEATH "hydrotray_plant_death"
+
+
 //Gibs
 
 ///from base of /obj/effect/decal/cleanable/blood/gibs/streak(): (list/directions, list/diseases)
@@ -1072,49 +1115,6 @@
 #define COMSIG_COMPONENT_NTNET_PORT_DESTROYED "ntnet_port_destroyed"
 ///called on an object by its NTNET connection component on a port distruction (port, list/data))
 #define COMSIG_COMPONENT_NTNET_PORT_UPDATED "ntnet_port_updated"
-
-//Nanites
-
-///() returns TRUE if nanites are found
-#define COMSIG_HAS_NANITES "has_nanites"
-///() returns TRUE if nanites have stealth
-#define COMSIG_NANITE_IS_STEALTHY "nanite_is_stealthy"
-///() deletes the nanite component
-#define COMSIG_NANITE_DELETE "nanite_delete"
-///(list/nanite_programs) - makes the input list a copy the nanites' program list
-#define COMSIG_NANITE_GET_PROGRAMS "nanite_get_programs"
-///(amount) Returns nanite amount
-#define COMSIG_NANITE_GET_VOLUME "nanite_get_volume"
-///(amount) Sets current nanite volume to the given amount
-#define COMSIG_NANITE_SET_VOLUME "nanite_set_volume"
-///(amount) Adjusts nanite volume by the given amount
-#define COMSIG_NANITE_ADJUST_VOLUME "nanite_adjust"
-///(amount) Sets maximum nanite volume to the given amount
-#define COMSIG_NANITE_SET_MAX_VOLUME "nanite_set_max_volume"
-///(amount(0-100)) Sets cloud ID to the given amount
-#define COMSIG_NANITE_SET_CLOUD "nanite_set_cloud"
-///(method) Modify cloud sync status. Method can be toggle, enable or disable
-#define COMSIG_NANITE_SET_CLOUD_SYNC "nanite_set_cloud_sync"
-///(amount) Sets safety threshold to the given amount
-#define COMSIG_NANITE_SET_SAFETY "nanite_set_safety"
-///(amount) Sets regeneration rate to the given amount
-#define COMSIG_NANITE_SET_REGEN "nanite_set_regen"
-///(code(1-9999)) Called when sending a nanite signal to a mob.
-#define COMSIG_NANITE_SIGNAL "nanite_signal"
-///(comm_code(1-9999), comm_message) Called when sending a nanite comm signal to a mob.
-#define COMSIG_NANITE_COMM_SIGNAL "nanite_comm_signal"
-///(mob/user, full_scan) - sends to chat a scan of the nanites to the user, returns TRUE if nanites are detected
-#define COMSIG_NANITE_SCAN "nanite_scan"
-///(list/data, scan_level) - adds nanite data to the given data list - made for ui_data procs
-#define COMSIG_NANITE_UI_DATA "nanite_ui_data"
-///(datum/nanite_program/new_program, datum/nanite_program/source_program) Called when adding a program to a nanite component
-#define COMSIG_NANITE_ADD_PROGRAM "nanite_add_program"
-	///Installation successful
-	#define COMPONENT_PROGRAM_INSTALLED (1<<0)
-	///Installation failed, but there are still nanites
-	#define COMPONENT_PROGRAM_NOT_INSTALLED (1<<1)
-///(datum/component/nanites, full_overwrite, copy_activation) Called to sync the target's nanites to a given nanite component
-#define COMSIG_NANITE_SYNC "nanite_sync"
 
 // /datum/component/storage signals
 
@@ -1223,8 +1223,17 @@
 #define COMSIG_ITEM_ATTACK_OBJ "item_attack_obj"
 ///from base of obj/item/pre_attack(): (atom/target, mob/user, params)
 #define COMSIG_ITEM_PRE_ATTACK "item_pre_attack"
-///from base of obj/item/afterattack(): (atom/target, mob/user, params)
+/// From base of [/obj/item/proc/pre_attack_secondary()]: (atom/target, mob/user, params)
+#define COMSIG_ITEM_PRE_ATTACK_SECONDARY "item_pre_attack_secondary"
+	#define COMPONENT_SECONDARY_CANCEL_ATTACK_CHAIN (1<<0)
+	#define COMPONENT_SECONDARY_CONTINUE_ATTACK_CHAIN (1<<1)
+	#define COMPONENT_SECONDARY_CALL_NORMAL_ATTACK_CHAIN (1<<2)
+/// From base of [/obj/item/proc/attack_secondary()]: (atom/target, mob/user, params)
+#define COMSIG_ITEM_ATTACK_SECONDARY "item_pre_attack_secondary"
+///from base of obj/item/afterattack(): (atom/target, mob/user, proximity_flag, click_parameters)
 #define COMSIG_ITEM_AFTERATTACK "item_afterattack"
+///from base of obj/item/afterattack_secondary(): (atom/target, mob/user, proximity_flag, click_parameters)
+#define COMSIG_ITEM_AFTERATTACK_SECONDARY "item_afterattack_secondary"
 ///from base of obj/item/attack_qdeleted(): (atom/target, mob/user, params)
 #define COMSIG_ITEM_ATTACK_QDELETED "item_attack_qdeleted"
 ///from base of atom/attack_hand(): (mob/user, modifiers)
@@ -1233,7 +1242,9 @@
 #define COMSIG_MOB_ITEM_ATTACK "mob_item_attack"
 ///from base of obj/item/afterattack(): (atom/target, mob/user, proximity_flag, click_parameters)
 #define COMSIG_MOB_ITEM_AFTERATTACK "mob_item_afterattack"
-///from base of obj/item/attack_qdeleted(): (atom/target, mob/user, proxiumity_flag, click_parameters)
+///from base of obj/item/afterattack_secondary(): (atom/target, mob/user, proximity_flag, click_parameters)
+#define COMSIG_MOB_ITEM_AFTERATTACK_SECONDARY "mob_item_afterattack_secondary"
+///from base of obj/item/attack_qdeleted(): (atom/target, mob/user, proximity_flag, click_parameters)
 #define COMSIG_MOB_ITEM_ATTACK_QDELETED "mob_item_attack_qdeleted"
 ///from base of mob/RangedAttack(): (atom/A, modifiers)
 #define COMSIG_MOB_ATTACK_RANGED "mob_attack_ranged"
@@ -1256,6 +1267,9 @@
 
 ///from /obj/item/assembly/proc/pulsed()
 #define COMSIG_ASSEMBLY_PULSED "assembly_pulsed"
+
+///from base of /obj/item/mmi/set_brainmob(): (mob/living/brain/new_brainmob)
+#define COMSIG_MMI_SET_BRAINMOB "mmi_set_brainmob"
 
 /// Exoprobe adventure finished: (result) result is ADVENTURE_RESULT_??? values
 #define COMSIG_ADVENTURE_FINISHED "adventure_done"
@@ -1286,14 +1300,12 @@
 	#define COMSIG_CANCEL_CLICKON 1
 
 // Component signals
-/// From /datum/port/output/set_output: (output_value)
-#define COMSIG_PORT_SET_OUTPUT "port_set_output"
-/// From /datum/port/input/set_input: (input_value)
-#define COMSIG_PORT_SET_INPUT "port_set_input"
-/// Sent when a port calls disconnect(). From /datum/port/disconnect: ()
+/// Sent when the value of a port is set.
+#define COMSIG_PORT_SET_VALUE "port_set_value"
+/// Sent when the type of a port is set.
+#define COMSIG_PORT_SET_TYPE "port_set_type"
+/// Sent when a port disconnects from everything.
 #define COMSIG_PORT_DISCONNECT "port_disconnect"
-/// Sent on the output port when an input port registers on it: (datum/port/input/registered_port)
-#define COMSIG_PORT_OUTPUT_CONNECT "port_output_connect"
 
 /// Sent when a [/obj/item/circuit_component] is added to a circuit.
 #define COMSIG_CIRCUIT_ADD_COMPONENT "circuit_add_component"
@@ -1310,6 +1322,28 @@
 /// Sent to [/obj/item/circuit_component] when it is removed from a circuit. (/obj/item/integrated_circuit)
 #define COMSIG_CIRCUIT_COMPONENT_REMOVED "circuit_component_removed"
 
+/// Called when the integrated circuit's cell is set.
+#define COMSIG_CIRCUIT_SET_CELL "circuit_set_cell"
+
+/// Called when the integrated circuit is turned on or off.
+#define COMSIG_CIRCUIT_SET_ON "circuit_set_on"
+
+/// Called when the integrated circuit's shell is set.
+#define COMSIG_CIRCUIT_SET_SHELL "circuit_set_shell"
+
+/// Called when the integrated circuit is locked.
+#define COMSIG_CIRCUIT_SET_LOCKED "circuit_set_locked"
+
+/// Called before power is used in an integrated circuit (power_to_use)
+#define COMSIG_CIRCUIT_PRE_POWER_USAGE "circuit_pre_power_usage"
+	#define COMPONENT_OVERRIDE_POWER_USAGE (1<<0)
+
+/// Called right before the integrated circuit data is converted to json. Allows modification to the data right before it is returned.
+#define COMSIG_CIRCUIT_PRE_SAVE_TO_JSON "circuit_pre_save_to_json"
+
+/// Called when the integrated circuit is loaded.
+#define COMSIG_CIRCUIT_POST_LOAD "circuit_post_load"
+
 /// Sent to an atom when a [/obj/item/usb_cable] attempts to connect to something. (/obj/item/usb_cable/usb_cable, /mob/user)
 #define COMSIG_ATOM_USB_CABLE_TRY_ATTACH "usb_cable_try_attach"
 	/// Attaches the USB cable to the atom. If the USB cables moves away, it will disconnect.
@@ -1322,8 +1356,29 @@
 	/// Cancels the attack chain, but without performing any other action.
 	#define COMSIG_CANCEL_USB_CABLE_ATTACK (1<<2)
 
+/// Called when the circuit component is saved.
+#define COMSIG_CIRCUIT_COMPONENT_SAVE "circuit_component_save"
+
+/// Called when an external object is loaded.
+#define COMSIG_MOVABLE_CIRCUIT_LOADED "movable_circuit_loaded"
+
 /// Called in /obj/structure/moneybot/add_money(). (to_add)
 #define COMSIG_MONEYBOT_ADD_MONEY "moneybot_add_money"
+
+/// Called in /obj/structure/dispenserbot/add_item(). (obj/item/to_add)
+#define COMSIG_DISPENSERBOT_ADD_ITEM "moneybot_add_item"
+
+/// Called in /obj/structure/dispenserbot/remove_item(). (obj/item/to_remove)
+#define COMSIG_DISPENSERBOT_REMOVE_ITEM "moneybot_remove_item"
+
+/// Called when somebody passes through a scanner gate and it triggers
+#define COMSIG_SCANGATE_PASS_TRIGGER "scangate_pass_trigger"
+
+/// Called when somebody passes through a scanner gate and it does not trigger
+#define COMSIG_SCANGATE_PASS_NO_TRIGGER "scangate_pass_no_trigger"
+
+/// Called when something passes through a scanner gate shell
+#define COMSIG_SCANGATE_SHELL_PASS "scangate_shell_pass"
 
 /// Sent by /obj/effect/abstract/shuttle_roof on Initialize() and Destroy()
 #define COMSIG_TURF_UPDATE_TRANSPARENCY "turf_update_transparency"
@@ -1335,3 +1390,16 @@
 #define COMSIG_MOB_PLAYS_FOOTSTEP "mob_plays_footstep"
 	/// Will cancel the attempted footstep playing (most likely after overriding and playing another one)
 	#define COMPONENT_CANCEL_PLAY_FOOTSTEP (1<<0)
+
+// Organ signals
+/// Called on the organ when it is implanted into someone (mob/living/carbon/receiver)
+#define COMSIG_ORGAN_IMPLANTED "comsig_organ_implanted"
+
+/// Called on the organ when it is removed from someone (mob/living/carbon/old_owner)
+#define COMSIG_ORGAN_REMOVED "comsig_organ_removed"
+
+/// Called when a techweb design is researched (datum/design/researched_design, custom)
+#define COMSIG_TECHWEB_ADD_DESIGN "techweb_add_design"
+
+/// Called when a techweb design is removed (datum/design/removed_design, custom)
+#define COMSIG_TECHWEB_REMOVE_DESIGN "techweb_remove_design"

@@ -17,7 +17,7 @@
 #define PROCESS_SYNTHETIC 2		//Only processes reagents with "SYNTHETIC" or "ORGANIC | SYNTHETIC"
 
 #define REAGENT_ORGANIC 1
-#define REAGENT_SYNTHETIC 2	
+#define REAGENT_SYNTHETIC 2
 
 //Some defines for sprite accessories
 // Which color source we're using when the accessory is added
@@ -40,8 +40,10 @@
 //The color list that is passed to color matrixed things when a person is husked
 #define HUSK_COLOR_LIST list(list(0.64, 0.64, 0.64, 0), list(0.64, 0.64, 0.64, 0), list(0.64, 0.64, 0.64, 0), list(0, 0, 0, 1))
 
-//Defines for an accessory to be randomed
-#define ACC_RANDOM		"random"
+/// Random accessory
+#define ACC_RANDOM "random"
+/// No accessory
+#define ACC_NONE "None"
 
 //organ slots
 #define ORGAN_SLOT_PENIS "penis"

@@ -219,7 +219,7 @@
 /datum/reagent/consumable/milk/on_hydroponics_apply(obj/item/seeds/myseed, datum/reagents/chems, obj/machinery/hydroponics/mytray, mob/user)
 	. = ..()
 	if(chems.has_reagent(type, 1))
-		mytray.adjustWater(round(chems.get_reagent_amount(type) * 0.3))
+		mytray.adjust_waterlevel(round(chems.get_reagent_amount(type) * 0.3))
 		if(myseed)
 			myseed.adjust_potency(-chems.get_reagent_amount(type) * 0.5)
 
@@ -262,6 +262,16 @@
 		M.heal_bodypart_damage(1, 0, 0)
 		. = TRUE
 	..()
+
+/datum/reagent/consumable/aquafaba
+	name = "Aquafaba"
+	description = "A strong, sweet, and slightly sour liquid."
+	color = "#DFDFDF" // rgb: 223, 223, 223
+	taste_description = "aquafaba"
+	glass_icon_state = "glass_white"
+	glass_name = "glass of aquafaba"
+	glass_desc = "Aquafaba is a strong, sweet, and slightly sour liquid."
+	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 
 /datum/reagent/consumable/coffee
 	name = "Coffee"
@@ -590,8 +600,8 @@
 /datum/reagent/consumable/sodawater/on_hydroponics_apply(obj/item/seeds/myseed, datum/reagents/chems, obj/machinery/hydroponics/mytray, mob/user)
 	. = ..()
 	if(chems.has_reagent(type, 1))
-		mytray.adjustWater(round(chems.get_reagent_amount(type) * 1))
-		mytray.adjustHealth(round(chems.get_reagent_amount(type) * 0.1))
+		mytray.adjust_waterlevel(round(chems.get_reagent_amount(type) * 1))
+		mytray.adjust_plant_health(round(chems.get_reagent_amount(type) * 0.1))
 
 /datum/reagent/consumable/sodawater/on_mob_life(mob/living/carbon/M, delta_time, times_fired)
 	M.dizziness = max(M.dizziness - (5 * REM * delta_time), 0)
@@ -736,10 +746,10 @@
 	color = "#FFB6C1"
 	quality = DRINK_VERYGOOD
 	nutriment_factor = 4 * REAGENTS_METABOLISM
-	taste_description = "creamy cherry"
-	glass_icon_state = "cherryshake"
-	glass_name = "cherry shake"
-	glass_desc = "A cherry flavored milkshake."
+	taste_description = "cherry milkshake"
+	glass_icon_state = "milkshake_cherry"
+	glass_name = "Cherry Milkshake"
+	glass_desc = "A cherry flavored milkshake with cream on top."
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 
 /datum/reagent/consumable/bluecherryshake
@@ -748,10 +758,70 @@
 	color = "#00F1FF"
 	quality = DRINK_VERYGOOD
 	nutriment_factor = 4 * REAGENTS_METABOLISM
-	taste_description = "creamy blue cherry"
-	glass_icon_state = "bluecherryshake"
-	glass_name = "blue cherry shake"
-	glass_desc = "An exotic blue milkshake."
+	taste_description = "blueberry milkshake"
+	glass_icon_state = "milkshake_bluecherry"
+	glass_name = "Blue-Cherry Milkshake"
+	glass_desc = "A blue-cherry milkshake topped with cream on top and a blueberry sauce drizzle."
+	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
+
+/datum/reagent/consumable/milkshake_chocolate
+	name = "Chocolate Milkshake"
+	description = "A chocolate flavored milkshake."
+	color = "#B8AB75"
+	quality = DRINK_VERYGOOD
+	nutriment_factor = 4 * REAGENTS_METABOLISM
+	taste_description = "CHOCCY MILKSHAKE!"
+	glass_icon_state = "milkshake_choco"
+	glass_name = "Chocolate Milkshake"
+	glass_desc = "A chocolate milkshake with cream on top and a chocolate sauce drizzle."
+	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
+
+/datum/reagent/consumable/milkshake_strawberry
+	name = "Strawberry Milkshake"
+	description = "A strawberry flavored milkshake."
+	color = "#E6B3AA"
+	quality = DRINK_VERYGOOD
+	nutriment_factor = 4 * REAGENTS_METABOLISM
+	taste_description = "sweet strawberries"
+	glass_icon_state = "milkshake_strawberry"
+	glass_name = "Strawberry Milkshake"
+	glass_desc = "A strawberry milkshake with cream on top and a raspberry sauce drizzle."
+	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
+
+/datum/reagent/consumable/milkshake_banana
+	name = "Banana Milkshake"
+	description = "A banana flavored milkshake."
+	color = "#EBD04E"
+	quality = DRINK_VERYGOOD
+	nutriment_factor = 4 * REAGENTS_METABOLISM
+	taste_description = "banana"
+	glass_icon_state = "milkshake_banana"
+	glass_name = "Banana Milkshake"
+	glass_desc = "A banana milkshake with cream on top."
+	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
+
+/datum/reagent/consumable/milkshake_vanilla
+	name = "Vanilla Milkshake"
+	description = "A vanilla flavored milkshake."
+	color = "#D2C8AA"
+	quality = DRINK_VERYGOOD
+	nutriment_factor = 4 * REAGENTS_METABOLISM
+	taste_description = "vanilla"
+	glass_icon_state = "milkshake_vanilla"
+	glass_name = "Vanilla Milkshake"
+	glass_desc = "A vanilla milkshake with cream on top."
+	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
+
+/datum/reagent/consumable/milkshake_caramel
+	name = "Caramel Milkshake"
+	description = "A caramel flavored milkshake."
+	color = "#E17C00"
+	quality = DRINK_VERYGOOD
+	nutriment_factor = 4 * REAGENTS_METABOLISM
+	taste_description = "sweet rich creamy caramel"
+	glass_icon_state = "milkshake_caramel"
+	glass_name = "Caramel Milkshake"
+	glass_desc = "A sweet caramel milkshake with cream on top."
 	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
 
 /datum/reagent/consumable/pumpkin_latte
@@ -822,7 +892,9 @@
 	color = "#7D4E29"
 	quality = DRINK_NICE
 	taste_description = "chocolate milk"
-	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
+	glass_icon_state = "chocolateglass"
+	glass_name = "glass of chocolate milk"
+	glass_desc = "It's chocolate-flavoured milk!"
 
 /datum/reagent/consumable/hot_coco
 	name = "Hot Coco"
@@ -1058,3 +1130,148 @@
 		M.adjustOxyLoss(-0.5 * REM * delta_time, 0)
 	..()
 	. = TRUE
+
+/datum/reagent/consumable/strawberry_banana
+	name = "strawberry banana smoothie"
+	description = "A classic smoothie made from strawberries and bananas."
+	color = "#FF9999"
+	nutriment_factor = 0
+	taste_description = "strawberry and banana"
+	glass_icon_state = "strawberry_banana"
+	glass_name = "strawberry banana smoothie"
+	glass_desc = "A classic drink which countless souls have bonded over..."
+	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
+
+/datum/reagent/consumable/berry_blast
+	name = "berry blast smoothie"
+	description = "A classic smoothie made from mixed berries."
+	color = "#A76DC5"
+	nutriment_factor = 0
+	taste_description = "mixed berry"
+	glass_icon_state = "berry_blast"
+	glass_name = "berry blast smoothie"
+	glass_desc = "A classic drink, freshly made with hand picked berries. Or, maybe not."
+	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
+
+/datum/reagent/consumable/funky_monkey
+	name = "funky monkey smoothie"
+	description = "A classic smoothie made from chocolate and bananas."
+	color = "#663300"
+	nutriment_factor = 0
+	taste_description = "chocolate and banana"
+	glass_icon_state = "funky_monkey"
+	glass_name = "funky monkey smoothie"
+	glass_desc = "A classic drink made with chocolate and banana. No monkeys were harmed, officially."
+	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
+
+/datum/reagent/consumable/green_giant
+	name = "green giant smoothie"
+	description = "A green vegetable smoothie, made without vegetables."
+	color = "#003300"
+	nutriment_factor = 0
+	taste_description = "green, just green"
+	glass_icon_state = "green_giant"
+	glass_name = "green giant smoothie"
+	glass_desc = "A classic drink, if you enjoy juiced wheatgrass and chia seeds."
+	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
+
+/datum/reagent/consumable/melon_baller
+	name = "melon baller smoothie"
+	description = "A classic smoothie made from melons."
+	color = "#D22F55"
+	nutriment_factor = 0
+	taste_description = "fresh melon"
+	glass_icon_state = "melon_baller"
+	glass_name = "melon baller smoothie"
+	glass_desc = "A wonderfully fresh melon smoothie. Guaranteed to brighten your day."
+	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
+
+/datum/reagent/consumable/vanilla_dream
+	name = "vanilla dream smoothie"
+	description = "A classic smoothie made from vanilla and fresh cream."
+	color = "#FFF3DD"
+	nutriment_factor = 0
+	taste_description = "creamy vanilla"
+	glass_icon_state = "vanilla_dream"
+	glass_name = "vanilla dream smoothie"
+	glass_desc = "A classic drink made with vanilla and fresh cream."
+	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
+
+/datum/reagent/consumable/shirley_temple
+	name = "Shirley Temple"
+	description = "Here you go little girl, now you can drink like the adults."
+	color = "#F43724"
+	quality = DRINK_GOOD
+	taste_description = "sweet cherry syrup and ginger spice"
+	glass_icon_state = "shirleytemple"
+	glass_name = "Shirley Temple"
+	glass_desc = "Ginger ale with processed grenadine. "
+	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
+
+/datum/reagent/consumable/shirley_temple/on_mob_life(mob/living/carbon/M, delta_time, times_fired)
+	M.adjust_disgust(-3 * REM * delta_time)
+	return ..()
+
+/datum/reagent/consumable/agua_fresca
+	name = "Agua Fresca"
+	description = "A refreshing watermelon agua fresca. Perfect on a day at the holodeck."
+	color = "#D25B66"
+	quality = DRINK_VERYGOOD
+	taste_description = "cool refreshing watermelon"
+	glass_icon_state = "aguafresca"
+	glass_name = "Agua Fresca"
+	glass_desc = "90% water, but still refreshing."
+	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
+
+/datum/reagent/consumable/agua_fresca/on_mob_life(mob/living/carbon/M, delta_time, times_fired)
+	M.adjust_bodytemperature(-8 * REM * TEMPERATURE_DAMAGE_COEFFICIENT * delta_time, M.get_body_temp_normal())
+	if(M.getToxLoss() && DT_PROB(10, delta_time))
+		M.adjustToxLoss(-0.5, 0)
+	return ..()
+
+/datum/reagent/consumable/cinderella
+	name = "Cinderella"
+	description = "Most definitely a fruity alcohol cocktail to have while partying with your friends."
+	color = "#FF6A50"
+	quality = DRINK_VERYGOOD
+	taste_description = "sweet tangy fruit"
+	glass_icon_state = "cinderella"
+	glass_name = "Cinderella"
+	glass_desc = "There is not a single drop of alcohol in this thing."
+	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
+
+/datum/reagent/consumable/cinderella/on_mob_life(mob/living/carbon/M, delta_time, times_fired)
+	M.adjust_disgust(-5 * REM * delta_time)
+	return ..()
+
+/datum/reagent/consumable/italian_coco
+	name = "Italian Hot Chocolate"
+	description = "Made with love! You can just imagine a happy Nonna from the smell."
+	nutriment_factor = 8 * REAGENTS_METABOLISM
+	color = "#57372A"
+	quality = DRINK_VERYGOOD
+	taste_description = "thick creamy chocolate"
+	glass_icon_state = "italiancoco"
+	glass_name = "glass of italian coco"
+	glass_desc = "A spin on a winter favourite, made to please."
+	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
+
+/datum/reagent/consumable/italian_coco/on_mob_life(mob/living/carbon/M, delta_time, times_fired)
+	M.adjust_bodytemperature(5 * REM * TEMPERATURE_DAMAGE_COEFFICIENT * delta_time, 0, M.get_body_temp_normal())
+	return ..()
+
+/datum/reagent/consumable/roy_rogers
+	name = "Roy Rogers"
+	description = "A sweet fizzy drink."
+	color = "#53090B"
+	quality = DRINK_GOOD
+	taste_description = "fruity overlysweet cola"
+	glass_icon_state = "royrogers"
+	glass_name = "Roy Rogers"
+	glass_desc = "90% sugar in a glass."
+	chemical_flags = REAGENT_CAN_BE_SYNTHESIZED
+
+/datum/reagent/consumable/roy_rogers/on_mob_life(mob/living/carbon/M, delta_time, times_fired)
+	M.Jitter(5 * REM * delta_time)
+	M.adjust_bodytemperature(-5 * REM * TEMPERATURE_DAMAGE_COEFFICIENT * delta_time, M.get_body_temp_normal())
+	return ..()

@@ -109,7 +109,6 @@
 	if(SSshuttle.arrivals?.mode == SHUTTLE_CALL)
 		var/atom/movable/screen/splash/Spl = new(boarder.client, TRUE)
 		Spl.Fade(TRUE)
-		boarder.playsound_local(get_turf(boarder), 'sound/voice/ApproachingTG.ogg', 25)
 	boarder.update_parallax_teleport()
 
 
@@ -311,6 +310,27 @@
 
 /area/shuttle/vulture/dorm
 	name = "MS Vulture Quarters"
+
+/area/shuttle/petrel
+	name = "MS Petrel"
+	requires_power = TRUE
+	area_limited_icon_smoothing = /area/shuttle/petrel
+
+/area/shuttle/pigeon
+	name = "CTS Pigeon"
+	requires_power = TRUE
+	area_limited_icon_smoothing = /area/shuttle/pigeon
+
+/area/shuttle/pigeon/helm
+	name = "CTS Pigeon Helm"
+
+/area/shuttle/rockdove
+	name = "EMS Rockdove"
+	requires_power = TRUE
+	area_limited_icon_smoothing = /area/shuttle/rockdove
+
+/area/shuttle/rockdove/helm
+	name = "EMS Rockdove Helm"
 
 /area/shuttle/barrow
 	name = "The Barrows"

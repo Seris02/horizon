@@ -105,14 +105,6 @@
 	for(var/i in 1 to 7)
 		new /obj/item/disk/data(src)
 
-/obj/item/storage/box/disks_nanite
-	name = "nanite program disks box"
-	illustration = "disk_kit"
-
-/obj/item/storage/box/disks_nanite/PopulateContents()
-	for(var/i in 1 to 7)
-		new /obj/item/disk/nanite_program(src)
-
 // Ordinary survival box
 /obj/item/storage/box/survival
 	name = "survival box"
@@ -1340,7 +1332,6 @@
 	illustration = "emergencytank"
 
 /obj/item/storage/box/emergencytank/PopulateContents()
-	..()
 	for(var/i in 1 to 7)
 		new /obj/item/tank/internals/emergency_oxygen(src) //in case anyone ever wants to do anything with spawning them, apart from crafting the box
 
@@ -1350,7 +1341,6 @@
 	illustration = "extendedtank"
 
 /obj/item/storage/box/engitank/PopulateContents()
-	..()
 	for(var/i in 1 to 7)
 		new /obj/item/tank/internals/emergency_oxygen/engi(src) //in case anyone ever wants to do anything with spawning them, apart from crafting the box
 
@@ -1384,3 +1374,12 @@
 		/obj/item/slimecross/stabilized/rainbow=1,\
 		)
 	generate_items_inside(items_inside,src)
+
+/obj/item/storage/box/inflatables
+	name = "box of inflatable walls"
+	desc = "A box of inflatable walls. They seem very compressed in there."
+	illustration = "implant"
+
+/obj/item/storage/box/inflatables/PopulateContents()
+	for(var/i in 1 to 4)
+		new /obj/item/inflatable(src)

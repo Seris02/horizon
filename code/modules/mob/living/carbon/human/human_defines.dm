@@ -5,7 +5,7 @@
 	icon = 'icons/mob/human.dmi'
 	icon_state = "human_basic"
 	appearance_flags = KEEP_TOGETHER|TILE_BOUND|PIXEL_SCALE|LONG_GLIDE
-	hud_possible = list(HEALTH_HUD,STATUS_HUD,ID_HUD,WANTED_HUD,IMPLOYAL_HUD,IMPCHEM_HUD,IMPTRACK_HUD, NANITE_HUD, DIAG_NANITE_FULL_HUD,ANTAG_HUD,GLAND_HUD,SENTIENT_DISEASE_HUD,FAN_HUD)
+	hud_possible = list(HEALTH_HUD,STATUS_HUD,ID_HUD,WANTED_HUD,IMPLOYAL_HUD,IMPCHEM_HUD,IMPTRACK_HUD,ANTAG_HUD,GLAND_HUD,SENTIENT_DISEASE_HUD,FAN_HUD)
 	hud_type = /datum/hud/human
 	pressure_resistance = 25
 	can_buckle = TRUE
@@ -17,10 +17,17 @@
 	var/hair_color = "000"
 	var/hairstyle = "Bald"
 
-	///Colour used for the hair gradient.
-	var/grad_color = "000"
-	///Style used for the hair gradient.
-	var/grad_style
+	// These could be a list but I don't think it's worth the overhead for two of these.
+	///Colour used for the primary hair gradient.
+	var/hair_gradient_color_primary = "000"
+	///Style used for the primary hair gradient.
+	var/hair_gradient_style_primary
+	///Is the primary hair gradient a dye or natural? This is used to determine if it's overwriteable, or removable.
+	var/hair_gradient_is_dye = FALSE
+	///Colour used for the secondary hair gradient.
+	var/hair_gradient_color_secondary = "000"
+	///Style used for the secondary hair gradient.
+	var/hair_gradient_style_secondary
 
 	//Facial hair colour and style
 	var/facial_hair_color = "000"

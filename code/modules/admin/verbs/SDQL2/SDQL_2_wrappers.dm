@@ -62,7 +62,10 @@
 
 /proc/_locate(X, Y, Z)
 	if (isnull(Y)) // Assuming that it's only a single-argument call.
-		return locate(X)
+		// direct ref locate
+		var/datum/D = locate(X)
+		// &&'s to last value
+		return istype(D) && D.can_vv_mark() && D
 
 	return locate(X, Y, Z)
 
@@ -85,7 +88,10 @@
 	return min(arglist(args))
 
 /proc/_new(type, arguments)
-	return new type (arglist(arguments))
+	var/datum/result = new type(arglist(arguments))
+	if(istype(result))
+		result.datum_flags |= DF_VAR_EDITED
+	return result
 
 /proc/_num2text(N, SigFig = 6)
 	return num2text(N, SigFig)

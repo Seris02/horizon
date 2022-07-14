@@ -47,7 +47,7 @@
 /obj/effect/mob_spawn/attack_ghost(mob/user)
 	if(!SSticker.HasRoundStarted() || !loc || !ghost_usable)
 		return
-	var/ghost_role = tgui_alert(usr,"Become [mob_name]? (Warning, You can no longer be revived!)",,list("Yes","No"))
+	var/ghost_role = tgui_alert(usr,"Become [mob_name]? (Warning, You may no longer be revived!)",,list("Yes","No"))
 	if(ghost_role == "No" || !loc || QDELETED(user))
 		return
 	if(!(GLOB.ghost_role_flags & GHOSTROLE_SPAWNER) && !(flags_1 & ADMIN_SPAWNED_1))
@@ -63,15 +63,13 @@
 		return
 	var/pref_load = FALSE
 	if(can_use_pref_char)
-		var/pref_choice = tgui_alert(user, "Would you like to spawn as a randomly created character, or use the one currently selected in your preferences?",,list("Use Random Character", "Use Character From Preferences"))
-		if(pref_choice && pref_choice == "Use Character From Preferences")
-			var/pref_choice2 = tgui_alert(user, "WARNING: This spawner will use your currently selected character in prefs ([user.client.prefs.real_name])\nMake sure that the character is not used as a station crew, or would have a good reason to be this role.(ie. intern in Space Hotel)\nUSING STATION CHARACTERS FOR SYNDICATE OR HOSTILE ROLES IS PROHIBITED WILL GET YOU BANNED!\nConsider making a character dedicated to the role.\nDo you wanna proceed?",,list("Yes", "No"))
-			if(pref_choice2 && pref_choice2 == "Yes")
-				if(!any_station_species && user.client.prefs.pref_species.type != mob_species)
-					to_chat(user, SPAN_WARNING("Sorry, This spawner is limited to those species: [mob_species]. Please switch your character."))
-					return
-				else
-					pref_load = TRUE
+		var/pref_choice = tgui_alert(user, "Would you like to spawn as a randomly created character, or use the one currently selected in your preferences?",,list("Use Random Character", "Use My Character"))
+		if(pref_choice && pref_choice == "Use My Character")
+			if(!any_station_species && user.client.prefs.pref_species.type != mob_species)
+				to_chat(user, SPAN_WARNING("Sorry, This spawner is limited to those species: [mob_species]. Please switch your character."))
+				return
+			else
+				pref_load = TRUE
 	var/alias = null
 	if(can_use_alias)
 		var/action = tgui_alert(user, "Would you like to use an alias?\nIf you do, your name will be changed to that",,list("Dont Use Alias", "Use Alias"))
@@ -138,9 +136,9 @@
 	if(ckey)
 		M.ckey = ckey
 		if(show_flavour)
-			var/output_message = "<span class='infoplain'><span class='big bold'>[short_desc]</span></span>"
+			var/output_message = SPAN_INFOPLAIN("<span class='big bold'>[short_desc]</span>")
 			if(flavour_text != "")
-				output_message += "\n<span class='infoplain'><b>[flavour_text]</b></span>"
+				output_message += "\n[SPAN_INFOPLAIN("<b>[flavour_text]</b>")]"
 			if(important_info != "")
 				output_message += "\n[SPAN_USERDANGER("[important_info]")]"
 			to_chat(M, output_message)

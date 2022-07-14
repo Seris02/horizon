@@ -16,11 +16,13 @@
 	end_message = SPAN_NOTICE("The air seems to be cooling off again.")
 
 	area_type = /area
-	protected_areas = list(/area/maintenance, /area/ai_monitored/turret_protected/ai_upload, /area/ai_monitored/turret_protected/ai_upload_foyer, /area/ai_monitored/turret_protected/aisat/maint, /area/ai_monitored/command/storage/satellite,
+	protected_areas = list(/area/maintenance, /area/mine/maintenance, /area/ai_monitored/turret_protected/ai_upload, /area/ai_monitored/turret_protected/ai_upload_foyer, /area/ai_monitored/turret_protected/aisat/maint, /area/ai_monitored/command/storage/satellite,
 	/area/ai_monitored/turret_protected/ai, /area/commons/storage/emergency/starboard, /area/commons/storage/emergency/port, /area/shuttle, /area/security/prison/safe, /area/security/prison/toilet)
 
 	immunity_type = RAD
 	multiply_blend_on_main_stage = TRUE
+	affects_underground = FALSE
+	protect_indoors = TRUE
 
 /datum/weather/rad_storm/telegraph()
 	..()

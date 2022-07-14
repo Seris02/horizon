@@ -413,7 +413,7 @@
 		return FALSE
 	if(!..())
 		return FALSE
-	visible_message("<span class='infoplain'>[SPAN_NAME("[src]")] points at [A].</span>", SPAN_NOTICE("You point at [A]."))
+	visible_message(SPAN_INFOPLAIN("[SPAN_NAME("[src]")] points at [A]."), SPAN_NOTICE("You point at [A]."))
 	return TRUE
 
 
@@ -571,8 +571,7 @@
 
 /// Proc to append behavior related to lying down.
 /mob/living/proc/on_lying_down(new_lying_angle)
-	if(layer == initial(layer)) //to avoid things like hiding larvas.
-		layer = LYING_MOB_LAYER //so mob lying always appear behind standing mobs
+	layer = LYING_MOB_LAYER //so mob lying always appear behind standing mobs
 	ADD_TRAIT(src, TRAIT_UI_BLOCKED, LYING_DOWN_TRAIT)
 	ADD_TRAIT(src, TRAIT_PULL_BLOCKED, LYING_DOWN_TRAIT)
 	set_density(FALSE) // We lose density and stop bumping passable dense things.
@@ -1680,7 +1679,7 @@
 	if(!lower_level) //We are at the lowest z-level.
 		to_chat(src, SPAN_WARNING("You can't see through the floor below you."))
 		return
-	else if(floor.IsTransparent()) //There is no turf we can look through below us
+	else if(!floor.IsTransparent()) //There is no turf we can look through below us
 		var/turf/front_hole = get_step(floor, dir)
 		if(front_hole.IsTransparent())
 			floor = front_hole

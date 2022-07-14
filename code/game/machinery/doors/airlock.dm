@@ -133,7 +133,7 @@
 	var/boltDown = 'sound/machines/boltsdown.ogg'
 	var/noPower = 'sound/machines/doorclick.ogg'
 	var/previous_airlock = /obj/structure/door_assembly //what airlock assembly mineral plating was applied to
-	
+
 	var/stripe_overlays = 'icons/obj/doors/airlocks/station/airlock_stripe.dmi'
 	var/color_overlays = 'icons/obj/doors/airlocks/station/airlock_color.dmi'
 	var/glass_fill_overlays = 'icons/obj/doors/airlocks/station/glass_overlays.dmi'
@@ -225,7 +225,8 @@
 /obj/machinery/door/airlock/proc/update_other_id()
 	for(var/obj/machinery/door/airlock/Airlock in GLOB.airlocks)
 		if(Airlock.closeOtherId == closeOtherId && Airlock != src)
-			close_others += Airlock
+			close_others |= Airlock
+			Airlock.close_others |= src
 
 /obj/machinery/door/airlock/proc/cyclelinkairlock()
 	if (cyclelinkedairlock)
@@ -308,10 +309,17 @@
 /obj/machinery/door/airlock/proc/bolt()
 	if(locked)
 		return
-	locked = TRUE
+	set_bolt(TRUE)
 	playsound(src,boltDown,30,FALSE,3)
 	audible_message(SPAN_HEAR("You hear a click from the bottom of the door."), null,  1)
 	update_appearance()
+
+/obj/machinery/door/airlock/proc/set_bolt(should_bolt)
+	if(locked == should_bolt)
+		return
+	SEND_SIGNAL(src, COMSIG_AIRLOCK_SET_BOLT, should_bolt)
+	. = locked
+	locked = should_bolt
 
 /obj/machinery/door/airlock/unlock()
 	unbolt()
@@ -319,7 +327,7 @@
 /obj/machinery/door/airlock/proc/unbolt()
 	if(!locked)
 		return
-	locked = FALSE
+	set_bolt(FALSE)
 	playsound(src,boltUp,30,FALSE,3)
 	audible_message(SPAN_HEAR("You hear a click from the bottom of the door."), null,  1)
 	update_appearance()
@@ -608,6 +616,10 @@
 
 /obj/machinery/door/airlock/examine(mob/user)
 	. = ..()
+	if(closeOtherId)
+		. += SPAN_WARNING("This airlock cycles on ID: [sanitize(closeOtherId)].")
+	else if(!closeOtherId)
+		. += SPAN_WARNING("This airlock does not cycle.")
 	if(obj_flags & EMAGGED)
 		. += SPAN_WARNING("Its access panel is smoking slightly.")
 	if(note)
